@@ -3,143 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dil-Boz Online 🌀</title>
+    <title>Dil-Boz Online 🌀 | Mega Edition</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --discord-blue: #7289da; --dark-bg: #2c2f33; }
-        body { background: var(--dark-bg); color: white; font-family: sans-serif; margin: 0; overflow: hidden; }
-        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .active { display: flex; }
-        .panel { background: #23272a; padding: 30px; border-radius: 20px; border: 2px solid var(--discord-blue); width: 85%; max-width: 500px; text-align: center; }
+        :root { --blurple: #5865f2; --green: #43b581; --dark: #36393f; --header: #202225; }
+        body { background: #2f3136; color: white; font-family: 'Whitney', 'Helvetica Neue', sans-serif; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
         
-        #lobby-area { width: 100%; height: 250px; background: #2f3136; border-radius: 15px; position: relative; margin: 15px 0; border: 1px inset #222; }
-        
-        /* DÜZELTİLMİŞ BALONCUKLAR */
-        .player-bubble { 
-            position: absolute; padding: 12px 20px; background: var(--discord-blue); 
-            border-radius: 50px; cursor: grab; font-weight: bold; user-select: none;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4); z-index: 10;
-        }
-        .player-bubble:active { cursor: grabbing; }
+        /* BÜYÜTÜLMÜŞ ARAYÜZ */
+        .panel { background: var(--dark); width: 95%; max-width: 800px; height: 85vh; border-radius: 20px; border: 3px solid var(--blurple); display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; }
+        .header { background: var(--header); padding: 25px; font-size: 2rem; font-weight: bold; text-align: center; border-bottom: 2px solid #222; }
+        .content { flex: 1; padding: 40px; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .content.active { display: flex; }
 
-        .link-box { background: #40444b; border-radius: 50px; padding: 10px; margin: 10px 0; font-size: 0.9rem; border: 1px solid #5865f2; }
-        input { background: #40444b; color: white; border: none; padding: 12px; border-radius: 8px; margin: 5px; width: 80%; }
-        button { background: var(--discord-blue); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px; }
+        /* MULTIPLAYER LOBİ ALANI */
+        #lobby-area { width: 100%; flex: 1; background: #202225; border-radius: 15px; position: relative; margin: 20px 0; border: 2px dashed #444; }
+        .player-bubble { position: absolute; padding: 15px 30px; background: var(--blurple); border-radius: 50px; cursor: grab; font-weight: bold; font-size: 1.2rem; user-select: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 100; transition: transform 0.1s; border: 2px solid rgba(255,255,255,0.2); }
+        .player-bubble:active { cursor: grabbing; transform: scale(1.1); }
+
+        /* FORM ELEMANLARI */
+        input { background: #40444b; color: white; border: 2px solid #222; padding: 20px; border-radius: 12px; width: 80%; font-size: 1.2rem; margin-bottom: 15px; transition: 0.3s; }
+        input:focus { border-color: var(--blurple); outline: none; }
+        button { background: var(--blurple); color: white; border: none; padding: 20px 40px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.3rem; transition: 0.3s; margin: 10px; }
+        button:hover { background: #4752c4; transform: translateY(-3px); }
+        .btn-green { background: var(--green); }
+        .btn-green:hover { background: #3ca374; }
+
+        /* OYUN EKRANI ÖZELLİKLERİ */
+        .word-box { background: #4f545c; padding: 40px; border-radius: 20px; font-size: 2.5rem; color: #faa61a; font-weight: bold; margin: 20px 0; border: 3px solid var(--blurple); text-align: center; min-width: 80%; }
+        .id-badge { background: #202225; padding: 10px 20px; border-radius: 50px; font-family: monospace; color: var(--green); cursor: pointer; border: 1px solid var(--green); }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="screen active">
-        <div class="panel">
-            <h1>Dil-Boz 🌀</h1>
-            <input type="text" id="nick-input" placeholder="Nickini Yaz...">
-            <br>
-            <button onclick="hostGame()">Lobi Kur</button>
-            <p>Veya</p>
-            <input type="text" id="join-id" placeholder="Oda Kodunu Yapıştır...">
-            <button onclick="joinGame()" style="background:#43b581;">Odaya Katıl</button>
-        </div>
-    </div>
+    <div class="panel">
+        <div class="header">DİL-BOZ ONLİNE 🌀</div>
 
-    <div id="lobby-screen" class="screen">
-        <div class="panel">
-            <h2>Oda Hazır!</h2>
-            <div class="link-box">Oda Kodun: <b id="my-id-display">...</b></div>
-            <p>Bu kodu arkadaşına gönder!</p>
+        <div id="screen-login" class="content active">
+            <input type="text" id="input-nick" placeholder="Bir nickname seç...">
+            <div style="display: flex; width: 100%; justify-content: center;">
+                <button onclick="startMode('host')">Lobi Kur</button>
+                <button onclick="startMode('join')" class="btn-green">Odaya Katıl</button>
+            </div>
+            <input type="text" id="input-room-id" placeholder="Oda Kodunu Buraya Yapıştır..." style="display:none; margin-top: 20px;">
+        </div>
+
+        <div id="screen-lobby" class="content">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span>Oda Kodun (Kopyala): </span>
+                <span class="id-badge" id="display-my-id" onclick="copyId()">---</span>
+            </div>
             <div id="lobby-area"></div>
-            <button onclick="alert('Oyun Başlatma Yakında!')">Oyunu Başlat ➔</button>
+            <p id="status-msg">Arkadaşının bağlanması bekleniyor...</p>
+            <button id="btn-start-game" onclick="broadcastStart()" style="display:none;" class="btn-green">OYUNU BAŞLAT! ➔</button>
+        </div>
+
+        <div id="screen-game" class="content">
+            <h2 id="turn-info">Sıra Kimde?</h2>
+            <div class="word-box" id="game-word">OYUN BAŞLIYOR...</div>
+            <input type="text" id="input-game" placeholder="Cümleyi yaz veya anladığını gir...">
+            <button onclick="sendTurn()">GÖNDER</button>
         </div>
     </div>
 
     <script>
-        let peer;
-        let conn;
-        let myNick = "";
-        let bubbles = {};
+        let peer, conn, myId, myNick;
+        let isHost = false;
+        let participants = {}; 
+        const charMap = {'a':'α','e':'€','u':'μ','ü':'ϋ','s':'§','ş':'∫','o':'0','ö':'θ','i':'ı','ı':'i','g':'9'};
 
-        function hostGame() {
-            myNick = document.getElementById('nick-input').value || "Anonim";
-            peer = new Peer(); // Rastgele bir ID oluşturur
-            peer.on('open', (id) => {
-                document.getElementById('my-id-display').innerText = id;
-                showScreen('lobby-screen');
-                addBubble(id, myNick, true);
-            });
-            peer.on('connection', (c) => {
-                conn = c;
-                setupChat();
-            });
+        function startMode(mode) {
+            myNick = document.getElementById('input-nick').value || "Oyuncu";
+            if(mode === 'host') {
+                isHost = true;
+                initPeer();
+            } else {
+                document.getElementById('input-room-id').style.display = 'block';
+                let target = document.getElementById('input-room-id').value;
+                if(target) initPeer(target);
+            }
         }
 
-        function joinGame() {
-            myNick = document.getElementById('nick-input').value || "Misafir";
-            let targetId = document.getElementById('join-id').value;
+        function initPeer(targetId = null) {
             peer = new Peer();
-            peer.on('open', (id) => {
-                conn = peer.connect(targetId);
-                showScreen('lobby-screen');
-                document.getElementById('my-id-display').innerText = targetId;
-                setupChat();
-                // Katıldığını haber ver
-                setTimeout(() => conn.send({type: 'join', nick: myNick, id: id}), 1000);
+            peer.on('open', id => {
+                myId = id;
+                document.getElementById('display-my-id').innerText = id;
+                showScreen('screen-lobby');
                 addBubble(id, myNick, true);
+                if(targetId) {
+                    conn = peer.connect(targetId);
+                    setupConn();
+                }
+            });
+            peer.on('connection', c => {
+                conn = c;
+                isHost = true;
+                setupConn();
+                document.getElementById('btn-start-game').style.display = 'block';
             });
         }
 
-        function setupChat() {
-            conn.on('data', (data) => {
-                if(data.type === 'join') addBubble(data.id, data.nick, false);
+        function setupConn() {
+            conn.on('open', () => {
+                conn.send({type: 'hello', nick: myNick, id: myId});
+                document.getElementById('status-msg').innerText = "Bağlantı Kuruldu! Baloncukları sürükleyebilirsin.";
+            });
+            conn.on('data', data => {
+                if(data.type === 'hello') {
+                    addBubble(data.id, data.nick, false);
+                    if(isHost) conn.send({type: 'hello', nick: myNick, id: myId}); // Karşılık ver
+                }
                 if(data.type === 'move') updateBubblePos(data.id, data.x, data.y);
+                if(data.type === 'start') showScreen('screen-game');
+                if(data.type === 'turn') receiveTurn(data.text);
             });
         }
 
         function addBubble(id, nick, isMe) {
-            if(bubbles[id]) return;
+            if(document.getElementById('bub-'+id)) return;
             const b = document.createElement('div');
+            b.id = 'bub-' + id;
             b.className = 'player-bubble';
             b.innerText = nick;
-            b.id = "bubble-" + id;
-            b.style.left = "50px"; b.style.top = "50px";
-            
+            b.style.left = "100px"; b.style.top = "100px";
             if(isMe) {
-                b.style.border = "2px solid white";
-                makeDraggable(b, id);
+                b.style.background = "#faa61a";
+                dragElement(b, id);
             }
-            
             document.getElementById('lobby-area').appendChild(b);
-            bubbles[id] = b;
         }
 
-        function makeDraggable(el, id) {
-            let x = 0, y = 0, x_old = 0, y_old = 0;
-            el.onmousedown = (e) => {
-                e.preventDefault();
-                x_old = e.clientX; y_old = e.clientY;
-                document.onmousemove = (e) => {
-                    x = x_old - e.clientX; y = y_old - e.clientY;
-                    x_old = e.clientX; y_old = e.clientY;
-                    let newTop = el.offsetTop - y;
-                    let newLeft = el.offsetLeft - x;
-                    
-                    // Sınırları koru (Lobi alanından çıkmasın)
-                    if(newTop > 0 && newTop < 200) el.style.top = newTop + "px";
-                    if(newLeft > 0 && newLeft < 350) el.style.left = newLeft + "px";
-                    
-                    // Pozisyonu diğerine gönder
-                    if(conn) conn.send({type: 'move', id: id, x: el.style.left, y: el.style.top});
-                };
+        function dragElement(el, id) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            el.onmousedown = dragMouseDown;
+            function dragMouseDown(e) {
+                pos3 = e.clientX; pos4 = e.clientY;
                 document.onmouseup = () => { document.onmousemove = null; };
-            };
+                document.onmousemove = elementDrag;
+            }
+            function elementDrag(e) {
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+                pos3 = e.clientX; pos4 = e.clientY;
+                let top = el.offsetTop - pos2;
+                let left = el.offsetLeft - pos1;
+                // Sınırlandırma
+                if(top > 0 && top < 350) el.style.top = top + "px";
+                if(left > 0 && left < 600) el.style.left = left + "px";
+                if(conn) conn.send({type: 'move', id: id, x: el.style.left, y: el.style.top});
+            }
         }
 
         function updateBubblePos(id, x, y) {
-            let b = document.getElementById("bubble-" + id);
+            const b = document.getElementById('bub-'+id);
             if(b) { b.style.left = x; b.style.top = y; }
         }
 
+        function broadcastStart() {
+            conn.send({type: 'start'});
+            showScreen('screen-game');
+        }
+
+        function sendTurn() {
+            let txt = document.getElementById('input-game').value;
+            if(!txt) return;
+            conn.send({type: 'turn', text: txt});
+            document.getElementById('game-word').innerText = "BEKLENİYOR...";
+            document.getElementById('input-game').value = "";
+        }
+
+        function receiveTurn(txt) {
+            // Bozma işlemi
+            let corrupted = txt.split('').map(c => (charMap[c.toLowerCase()] && Math.random() > 0.5) ? charMap[c.toLowerCase()] : c).join('');
+            document.getElementById('game-word').innerText = corrupted;
+            document.getElementById('turn-info').innerText = "Sıra Sende! Ne anladın?";
+        }
+
         function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+        }
+
+        function copyId() {
+            navigator.clipboard.writeText(myId);
+            alert("Oda kodu kopyalandı!");
         }
     </script>
 </body>
