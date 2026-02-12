@@ -3,123 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dil-Boz | Pastel Kaos</title>
+    <title>DİL-BOZ | Kaos Başlasın!</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        /* PASTEL BOYAL ARKA PLAN */
-        body { 
-            background: #87CEEB; /* Gökyüzü */
-            margin: 0; overflow: hidden; font-family: 'Comic Sans MS', cursive;
-            display: flex; justify-content: center; align-items: center; height: 100vh;
+        :root {
+            --bg: #F0F4F8;
+            --primary: #6E7BFF;
+            --secondary: #FF85A1;
+            --accent: #FFD166;
+            --text: #2D3436;
         }
-        .landscape { position: fixed; bottom: 0; width: 100%; height: 300px; z-index: -1; }
-        .grass { background: #7CFC00; height: 100px; position: absolute; bottom: 0; width: 100%; border-top: 5px solid #64cc00; }
-        .house { position: absolute; bottom: 80px; left: 10%; width: 120px; height: 100px; background: #FFD700; border: 3px solid #333; }
-        .roof { position: absolute; bottom: 180px; left: 9%; border-left: 70px solid transparent; border-right: 70px solid transparent; border-bottom: 60px solid #FF4500; }
-        .tree { position: absolute; bottom: 80px; right: 15%; width: 20px; height: 100px; background: #8B4513; }
-        .leaves { position: absolute; bottom: 160px; right: 12%; width: 80px; height: 80px; background: #228B22; border-radius: 50%; box-shadow: 20px -10px #228B22, -20px -10px #228B22; }
 
-        .panel { background: rgba(255, 255, 255, 0.9); width: 90%; max-width: 500px; min-height: 70vh; border-radius: 25px; border: 8px solid #FF69B4; display: flex; flex-direction: column; box-shadow: 10px 10px 0px rgba(0,0,0,0.1); }
-        .header { padding: 15px; background: #FF69B4; color: white; text-align: center; font-size: 1.8rem; }
-        .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        body { 
+            background: var(--bg);
+            margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+            color: var(--text);
+        }
+
+        /* GARTIC TARZI ARKA PLAN */
+        .bg-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #e5e5f7;
+            opacity: 0.4;
+            background-image:  radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0,10px 10px;
+            z-index: -1;
+        }
+
+        .panel { 
+            background: white; width: 95%; max-width: 600px; min-height: 80vh; 
+            border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative;
+        }
+
+        .header { 
+            padding: 20px; background: var(--primary); color: white; 
+            text-align: center; font-size: 2rem; font-weight: bold;
+            border-radius: 25px 25px 5px 5px; letter-spacing: 2px;
+        }
+
+        .content { flex: 1; padding: 25px; display: none; flex-direction: column; align-items: center; justify-content: flex-start; }
         .active { display: flex; }
         
-        #lobby-area { width: 100%; height: 200px; background: rgba(255,255,255,0.5); border-radius: 15px; position: relative; margin: 10px 0; border: 3px dashed #FF69B4; overflow: hidden; }
-        .player-bubble { position: absolute; padding: 8px 15px; background: #00BFFF; color: white; border-radius: 20px; cursor: move; font-weight: bold; border: 2px solid white; touch-action: none; }
+        /* LOBİ ALANI */
+        #lobby-area { 
+            width: 100%; height: 300px; background: #F8FAFC; border-radius: 30px; 
+            position: relative; margin: 20px 0; border: 4px dashed #CBD5E1; overflow: hidden; 
+        }
 
-        input { padding: 15px; border-radius: 12px; border: 3px solid #00BFFF; width: 80%; margin-bottom: 10px; font-size: 1rem; }
-        button { padding: 12px 25px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; color: white; margin: 5px; font-size: 1rem; }
-        .btn-green { background: #32CD32; }
-        .btn-blue { background: #1E90FF; }
-        .btn-red { background: #FF4500; }
+        .player-bubble { 
+            position: absolute; padding: 12px 20px; background: var(--secondary); color: white; 
+            border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.2s;
+            user-select: none; touch-action: none;
+        }
 
-        .word-box { background: #FFF; padding: 20px; border-radius: 15px; font-size: 1.5rem; color: #333; border: 4px solid #1E90FF; width: 85%; text-align: center; }
-        .results { text-align: left; width: 100%; overflow-y: auto; max-height: 300px; }
-        .res-item { background: #eee; margin: 5px 0; padding: 10px; border-radius: 8px; border-left: 5px solid #FF69B4; }
+        /* INPUT & BUTTONS */
+        input { 
+            padding: 15px; border-radius: 20px; border: 3px solid #E2E8F0; 
+            width: 80%; margin-bottom: 15px; font-size: 1.1rem; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary); }
+
+        button { 
+            padding: 15px 35px; border-radius: 20px; border: none; cursor: pointer; 
+            font-weight: bold; color: white; font-size: 1.1rem; transition: 0.3s;
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        button:active { transform: translateY(3px); box-shadow: none; }
+        
+        .btn-green { background: #00B894; }
+        .btn-blue { background: var(--primary); }
+        .btn-red { background: #FF7675; }
+
+        /* GAMEPLAY */
+        #timer { font-size: 2rem; font-weight: bold; color: var(--secondary); margin-bottom: 10px; }
+        .word-box { 
+            background: #F1F2F6; padding: 30px; border-radius: 25px; 
+            font-size: 1.4rem; color: #2D3436; border: 4px solid var(--accent); 
+            width: 85%; text-align: center; margin-bottom: 20px; min-height: 60px;
+        }
+
+        /* OYLAMA SİSTEMİ */
+        .res-item { 
+            background: white; margin: 10px 0; padding: 15px; border-radius: 20px; 
+            border: 3px solid #F1F2F6; width: 90%; display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: 0.3s;
+        }
+        .res-item:hover { border-color: var(--secondary); transform: scale(1.02); }
+        .vote-count { background: var(--accent); padding: 5px 12px; border-radius: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="landscape">
-    <div class="grass"></div>
-    <div class="roof"></div>
-    <div class="house"></div>
-    <div class="tree"></div>
-    <div class="leaves"></div>
-</div>
+<div class="bg-pattern"></div>
 
 <div class="panel">
-    <div class="header">DİL-BOZ 🌀</div>
+    <div class="header" id="game-header">DİL-BOZ 🌀</div>
 
     <div id="scr-login" class="content active">
-        <input type="text" id="nick" placeholder="İsmin nedir?">
-        <button class="btn-green" onclick="setup('host')">Lobi Kur</button>
-        <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
-        <div id="join-box" style="display:none;">
-            <input type="text" id="room-id" placeholder="Kod">
-            <button class="btn-blue" onclick="setup('join')">Giriş</button>
+        <input type="text" id="nick" placeholder="Takma Adın...">
+        <button class="btn-green" onclick="setup('host')">Oda Kur</button>
+        <button class="btn-blue" style="margin-top:10px" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
+        <div id="join-box" style="display:none; width:100%; text-align:center; margin-top:20px;">
+            <input type="text" id="room-id" placeholder="Kod Buraya...">
+            <button class="btn-blue" onclick="setup('join')">Giriş Yap</button>
         </div>
     </div>
 
     <div id="scr-lobby" class="content">
-        <p>Oda Kodu: <b id="my-id" style="color:#FF4500">...</b></p>
+        <p style="margin:0">Oda Kodu (Tıkla Kopyala):</p>
+        <h2 id="my-id" style="color:var(--primary); cursor:pointer; margin: 10px 0;">...</h2>
         <div id="lobby-area"></div>
         <button id="start-btn" class="btn-green" style="display:none" onclick="startGame()">OYUNU BAŞLAT!</button>
     </div>
 
     <div id="scr-game" class="content">
-        <h3 id="turn-msg" style="color:#FF4500">Hazırlan...</h3>
+        <div id="timer">20</div>
+        <h3 id="turn-msg">Sıra Bekleniyor...</h3>
         <div class="word-box" id="word-display">...</div>
-        <input type="text" id="game-input" placeholder="Anladığını buraya yaz..." disabled>
+        <input type="text" id="game-input" placeholder="Gördüğünü yorumla..." disabled oninput="sendTyping()">
         <button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>GÖNDER</button>
     </div>
 
     <div id="scr-final" class="content">
-        <h2>Oyun Bitti! 🎨</h2>
-        <div class="results" id="final-results"></div>
-        <button class="btn-red" onclick="location.reload()">Tekrar Oyna</button>
+        <h2>Hangi Cümle Daha Saçma? 🎨</h2>
+        <p>En komiğine oy ver!</p>
+        <div id="final-results" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
+        <button class="btn-red" style="margin-top:20px" onclick="location.reload()">Yeni Oyun</button>
     </div>
 </div>
 
 <script>
-    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 5, history = [];
-    const symbols = ['$', '#', '/', '!', '?', '@', '*', '%'];
-    const foreign = ['Morning', 'Schule', 'Chat', 'Water', 'Livre', 'Friend'];
-    const charMap = {'a':'α','e':'€','u':'μ','ü':'ϋ','s':'§','ş':'∫','o':'0','ö':'θ','i':'ı'};
+    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 5, history = [], votes = {};
+    let timerInterval;
+    const foreign = ['Table', 'Zimmer', 'Bonjour', 'Karpuz', 'Space', 'Mesa', 'Baklava', 'Computer'];
+    const charMap = {'a':'4','e':'3','i':'1','o':'0','s':'5','ş':'∫','u':'μ','ü':'ϋ','ö':'θ'};
 
+    // SETUP & P2P
     function setup(mode) {
-        myNick = document.getElementById('nick').value || "Anonim";
-        const shortId = Math.random().toString(36).substring(2, 8).toUpperCase();
+        myNick = document.getElementById('nick').value || "Oyuncu" + Math.floor(Math.random()*100);
+        const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
         peer = new Peer(mode === 'host' ? shortId : undefined);
+
         peer.on('open', id => {
-            myId = id; document.getElementById('my-id').innerText = id;
-            show('scr-lobby'); addBubble(id, myNick, true);
+            myId = id; 
+            document.getElementById('my-id').innerText = id;
+            document.getElementById('my-id').onclick = () => {
+                navigator.clipboard.writeText(id);
+                alert("Kod kopyalandı!");
+            };
+            show('scr-lobby'); 
+            addBubble(id, myNick, true);
             players.push({id: id, nick: myNick});
             if(mode === 'join') {
-                conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
+                const target = document.getElementById('room-id').value.toUpperCase();
+                conn = peer.connect(target);
                 handleConn();
             }
         });
-        peer.on('connection', c => { conn = c; handleConn(); document.getElementById('start-btn').style.display='block'; });
+
+        peer.on('connection', c => { 
+            conn = c; 
+            handleConn(); 
+            document.getElementById('start-btn').style.display='block'; 
+        });
     }
 
     function handleConn() {
         conn.on('open', () => conn.send({type:'join', nick:myNick, id:myId}));
         conn.on('data', d => {
-            if(d.type === 'join') { players.push({id:d.id, nick:d.nick}); addBubble(d.id, d.nick, false); if(players.length > 1) conn.send({type:'list', list:players}); }
-            if(d.type === 'list') { d.list.forEach(p => { if(!players.find(x=>x.id==p.id)) { players.push(p); addBubble(p.id, p.nick, false); }}); }
-            if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){b.style.left=d.x; b.style.top=d.y;} }
-            if(d.type === 'start') { players = d.players; show('scr-game'); nextTurn(); }
+            if(d.type === 'join') { 
+                players.push({id:d.id, nick:d.nick}); 
+                addBubble(d.id, d.nick, false);
+                if(players.length > 1) conn.send({type:'list', list:players});
+            }
+            if(d.type === 'list') { 
+                d.list.forEach(p => { if(!players.find(x=>x.id==p.id)) { players.push(p); addBubble(p.id, p.nick, false); }}); 
+            }
+            if(d.type === 'move') { 
+                let b = document.getElementById('bub-'+d.id); 
+                if(b){ b.style.left=d.x; b.style.top=d.y; } 
+            }
+            if(d.type === 'start') { players = d.players; show('scr-game'); startTurnLogic(); }
             if(d.type === 'play') { history.push({nick: d.nick, text: d.text}); receiveTurn(d.text); }
+            if(d.type === 'typing') { document.getElementById('word-display').innerText = d.nick + " yazıyor..."; }
             if(d.type === 'finish') { history = d.history; showResults(); }
+            if(d.type === 'vote') { votes[d.idx] = (votes[d.idx] || 0) + 1; updateVoteDisplay(); }
         });
     }
 
+    // LOBİ BALONCUKLARI
     function addBubble(id, nick, isMe) {
         if(document.getElementById('bub-'+id)) return;
         const b = document.createElement('div');
         b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = nick;
-        b.style.left = "20px"; b.style.top = "20px";
+        b.style.left = Math.random()*150 + "px"; b.style.top = Math.random()*150 + "px";
         if(isMe) makeDraggable(b, id);
         document.getElementById('lobby-area').appendChild(b);
     }
@@ -130,9 +211,7 @@
             const cx = e.touches ? e.touches[0].clientX : e.clientX;
             const cy = e.touches ? e.touches[0].clientY : e.clientY;
             const r = area.getBoundingClientRect();
-            let x = cx - r.left - 30, y = cy - r.top - 15;
-            if(x<0) x=0; if(x > r.width-70) x=r.width-70;
-            if(y<0) y=0; if(y > r.height-40) y=r.height-40;
+            let x = cx - r.left - 40, y = cy - r.top - 20;
             el.style.left = x+"px"; el.style.top = y+"px";
             if(conn) conn.send({type:'move', id:id, x:el.style.left, y:el.style.top});
         };
@@ -142,55 +221,94 @@
         document.addEventListener('touchend', () => document.removeEventListener('touchmove', move));
     }
 
+    // OYUN MANTIĞI
     function startGame() {
         players.sort(() => Math.random() - 0.5);
         conn.send({type:'start', players:players});
-        show('scr-game'); nextTurn();
+        show('scr-game'); startTurnLogic();
     }
 
-    function nextTurn() {
+    function startTimer() {
+        let timeLeft = 20;
+        document.getElementById('timer').innerText = timeLeft;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                if(!document.getElementById('game-input').disabled) sendTurn();
+            }
+        }, 1000);
+    }
+
+    function startTurnLogic() {
         if(turnIdx >= maxTurns) {
             if(conn) conn.send({type:'finish', history: history});
             showResults(); return;
         }
         let current = players[turnIdx % players.length];
-        document.getElementById('turn-msg').innerText = (current.id === myId ? "SIRA SENDE!" : "BEKLE...");
-        document.getElementById('game-input').disabled = current.id !== myId;
-        document.getElementById('send-btn').disabled = current.id !== myId;
-        if(current.id !== myId) document.getElementById('word-display').innerText = "Arkadaşın yazıyor...";
+        const isMyTurn = current.id === myId;
+        
+        document.getElementById('turn-msg').innerText = isMyTurn ? "SIRA SENDE! ÇABUK YAZ!" : current.nick + " DÜŞÜNÜYOR...";
+        document.getElementById('game-input').disabled = !isMyTurn;
+        document.getElementById('send-btn').disabled = !isMyTurn;
+        
+        if(isMyTurn) {
+            startTimer();
+            document.getElementById('game-input').focus();
+        } else {
+            clearInterval(timerInterval);
+        }
     }
 
+    function sendTyping() { if(conn) conn.send({type:'typing', nick:myNick}); }
+
     function sendTurn() {
-        const val = document.getElementById('game-input').value;
-        if(!val) return;
+        const val = document.getElementById('game-input').value || "Boş bıraktı!";
         history.push({nick: myNick, text: val});
-        conn.send({type:'play', text:val, nick: myNick});
+        if(conn) conn.send({type:'play', text:val, nick: myNick});
         document.getElementById('game-input').value = "";
-        turnIdx++; nextTurn();
+        turnIdx++; startTurnLogic();
     }
 
     function receiveTurn(t) {
-        let words = t.split(' ');
-        let corrupted = words.map(w => {
-            if(Math.random() > 0.7) return foreign[Math.floor(Math.random()*foreign.length)];
-            let chars = w.split('').map(c => {
-                if(charMap[c.toLowerCase()] && Math.random() > 0.4) return charMap[c.toLowerCase()];
-                if(Math.random() > 0.8) return symbols[Math.floor(Math.random()*symbols.length)];
-                return c;
-            });
-            return chars.join('');
+        let corruption = 0.4;
+        let words = t.split(' ').map(w => {
+            if(Math.random() < 0.2) return foreign[Math.floor(Math.random()*foreign.length)];
+            return w.split('').map(c => (charMap[c.toLowerCase()] && Math.random() < 0.5) ? charMap[c.toLowerCase()] : c).join('');
         }).join(' ');
-        document.getElementById('word-display').innerText = corrupted;
-        turnIdx++; nextTurn();
+        
+        document.getElementById('word-display').innerText = words;
+        turnIdx++; startTurnLogic();
     }
 
+    // OYLAMA SİSTEMİ
     function showResults() {
         show('scr-final');
-        const resDiv = document.getElementById('final-results');
-        resDiv.innerHTML = history.map((h, i) => `<div class="res-item"><b>${i+1}. ${h.nick}:</b> ${h.text}</div>`).join('');
+        updateVoteDisplay();
     }
 
-    function show(id) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+    function updateVoteDisplay() {
+        const resDiv = document.getElementById('final-results');
+        resDiv.innerHTML = history.map((h, i) => `
+            <div class="res-item" onclick="castVote(${i})">
+                <span><b>${h.nick}:</b> ${h.text}</span>
+                <span class="vote-count">🔥 ${votes[i] || 0}</span>
+            </div>
+        `).join('');
+    }
+
+    function castVote(idx) {
+        votes[idx] = (votes[idx] || 0) + 1;
+        if(conn) conn.send({type:'vote', idx: idx});
+        updateVoteDisplay();
+    }
+
+    function show(id) { 
+        document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
 </script>
 </body>
 </html>
