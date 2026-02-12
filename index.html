@@ -3,59 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DİL-BOZ | Kaos ve Tarz</title>
+    <title>DİL-BOZ | Ultra Kaos</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root {
-            --bg: #F0F4F8; --primary: #6E7BFF; --secondary: #FF85A1;
-            --accent: #FFD166; --text: #2D3436; --success: #00B894;
-        }
-        body { 
-            background: var(--bg); margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif;
-            display: flex; justify-content: center; align-items: center; height: 100vh;
-            transition: background-color 0.5s ease;
-        }
-        .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #e5e5f7; opacity: 0.3; background-image: radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px); background-size: 20px 20px; z-index: -1; }
+        :root { --bg: #F0F4F8; --primary: #6E7BFF; --secondary: #FF85A1; --accent: #FFD166; --text: #2D3436; --success: #00B894; }
+        body { background: var(--bg); margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; transition: background 0.3s; }
+        .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; background-image: radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px); background-size: 20px 20px; z-index: -1; }
         
-        .panel { background: white; width: 95%; max-width: 700px; min-height: 85vh; border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; }
+        .panel { background: white; width: 95%; max-width: 800px; min-height: 85vh; border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; }
         .header { padding: 15px; background: var(--primary); color: white; text-align: center; font-size: 1.6rem; font-weight: bold; border-radius: 25px 25px 5px 5px; }
         .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; overflow-y: auto; }
         .active { display: flex; }
 
-        /* LOBİ VE AKSESUARLAR */
-        #lobby-container { display: flex; width: 100%; gap: 10px; flex-wrap: wrap; }
-        #lobby-area { flex: 2; height: 300px; background: #F8FAFC; border-radius: 30px; position: relative; border: 4px dashed #CBD5E1; overflow: hidden; min-width: 300px; }
-        #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); min-width: 150px; }
+        /* LOBİ */
+        #lobby-container { display: flex; width: 100%; gap: 15px; flex-wrap: wrap; }
+        #lobby-area { flex: 2; height: 350px; background: #F8FAFC; border-radius: 30px; position: relative; border: 4px dashed #CBD5E1; overflow: hidden; min-width: 300px; }
+        #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); max-height: 350px; overflow-y: auto; }
         
-        .player-bubble { position: absolute; padding: 10px 18px; background: var(--secondary); color: white; border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; white-space: nowrap; transition: background 0.3s; }
-        .acc { position: absolute; pointer-events: none; font-size: 24px; left: 50%; transform: translateX(-50%); }
-        .hat { top: -25px; }
-        .mustache { bottom: -15px; }
+        .player-bubble { position: absolute; padding: 12px 22px; background: var(--secondary); color: white; border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .acc { position: absolute; pointer-events: none; font-size: 30px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        .hat { top: -35px; }
+        .glass { top: -10px; font-size: 22px; }
+        .mustache { bottom: -18px; }
 
-        .acc-option { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 10px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; }
+        .acc-option { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 10px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; width: 35px; text-align: center; }
         .acc-option:hover { background: var(--accent); }
 
         /* OYUN */
         #timer { font-size: 2.5rem; font-weight: bold; color: var(--secondary); }
-        .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; }
-        .panic { background-color: #ffeaea !important; }
+        .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; min-height: 60px; }
+        .panic { background-color: #ffcccc !important; }
 
-        /* BUTONLAR */
         button { padding: 12px 25px; border-radius: 15px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin: 5px; }
         .btn-green { background: var(--success); }
-        .btn-red { background: #FF7675; }
         .btn-blue { background: var(--primary); }
+        .btn-red { background: #FF7675; }
+        input, select { padding: 12px; border-radius: 15px; border: 2px solid #ddd; margin: 5px; outline: none; }
     </style>
 </head>
 <body>
 <div class="bg-pattern"></div>
 <div class="panel">
-    <div class="header">DİL-BOZ 🌀</div>
+    <div class="header" id="main-header">DİL-BOZ 🌀</div>
 
     <div id="scr-login" class="content active">
-        <input type="text" id="nick" placeholder="İsmin..." style="padding:15px; border-radius:15px; border:2px solid #ddd; width:70%">
+        <input type="text" id="nick" placeholder="Adın nedir?">
         <button class="btn-green" onclick="setup('host')">Oda Kur</button>
-        <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
+        <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Katıl</button>
         <div id="join-box" style="display:none; margin-top:10px;">
             <input type="text" id="room-id" placeholder="Kod">
             <button class="btn-blue" onclick="setup('join')">Giriş</button>
@@ -67,23 +61,27 @@
         <div id="lobby-container">
             <div id="lobby-area"></div>
             <div id="wardrobe">
-                <p style="font-size:0.8rem; font-weight:bold; margin:5px 0">ŞAPKALAR</p>
+                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">ŞAPKA</p>
                 <div class="acc-option" onclick="setAcc('hat', '🎩')">🎩</div>
                 <div class="acc-option" onclick="setAcc('hat', '👑')">👑</div>
-                <div class="acc-option" onclick="setAcc('hat', '🎓')">🎓</div>
+                <div class="acc-option" onclick="setAcc('hat', '💩')">💩</div>
                 <div class="acc-option" onclick="setAcc('hat', '🤠')">🤠</div>
-                <div class="acc-option" onclick="setAcc('hat', '🎅')">🎅</div>
-                <p style="font-size:0.8rem; font-weight:bold; margin:5px 0">BIYIKLAR</p>
-                <div class="acc-option" onclick="setAcc('mus', '👨🏻‍')">👨🏻‍</div>
-                <div class="acc-option" onclick="setAcc('mus', '🥸')">🥸</div>
+                <div class="acc-option" onclick="setAcc('hat', '🎓')">🎓</div>
+                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">GÖZLÜK</p>
+                <div class="acc-option" onclick="setAcc('gls', '🕶️')">🕶️</div>
+                <div class="acc-option" onclick="setAcc('gls', '😎')">😎</div>
+                <div class="acc-option" onclick="setAcc('gls', '🧐')">🧐</div>
+                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">BIYIK</p>
                 <div class="acc-option" onclick="setAcc('mus', '〰️')">〰️</div>
+                <div class="acc-option" onclick="setAcc('mus', '👨🏻')">👨🏻</div>
                 <div class="acc-option" onclick="setAcc('mus', '🧔')">🧔</div>
-                <div class="acc-option" onclick="setAcc('mus', '🐈')">🐈</div>
+                <div class="acc-option" onclick="setAcc('mus', '🥸')">🥸</div>
             </div>
         </div>
         <div id="host-settings" style="display:none">
-            <select id="turn-select" style="padding:10px; border-radius:10px">
+            <select id="turn-select">
                 <option value="2">2 Tur</option><option value="4">4 Tur</option><option value="6" selected>6 Tur</option>
+                <option value="8">8 Tur</option><option value="10">10 Tur</option><option value="12">12 Tur</option>
             </select>
             <button class="btn-green" onclick="startGame()">BAŞLAT!</button>
         </div>
@@ -92,13 +90,13 @@
     <div id="scr-game" class="content">
         <div id="timer">20</div>
         <div class="word-box" id="word-display">...</div>
-        <input type="text" id="game-input" placeholder="Anladığını yaz..." disabled oninput="sendTyping()" style="width:80%; padding:15px; border-radius:15px; border:2px solid #ddd;">
+        <input type="text" id="game-input" placeholder="Yaz..." disabled oninput="sendTyping()" style="width:70%">
         <button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>GÖNDER</button>
     </div>
 
     <div id="scr-final" class="content">
         <h2 id="winner-text">Oylama!</h2>
-        <div id="final-results" style="width: 100%"></div>
+        <div id="final-results" style="width:100%"></div>
         <button class="btn-green" onclick="backToLobby()">LOBİYE DÖN</button>
         <button class="btn-red" onclick="location.reload()">ÇIKIŞ</button>
     </div>
@@ -106,20 +104,20 @@
 
 <script>
     let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 6, history = [], votes = {}, myVoteIdx = -1;
-    let timerInterval, myAcc = {hat: '', mus: ''};
-    const audioPop = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    let timerInterval, myAcc = {hat:'', gls:'', mus:''};
     const audioTick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
     function setup(mode) {
-        myNick = document.getElementById('nick').value || "Anonim";
+        myNick = document.getElementById('nick').value || "İsimsiz";
         const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
         peer = new Peer(mode === 'host' ? shortId : undefined);
+        
         peer.on('open', id => {
             myId = id; document.getElementById('my-id').innerText = id;
             show('scr-lobby'); addBubble(id, myNick, true);
-            players.push({id: id, nick: myNick, acc: myAcc});
+            players.push({id, nick: myNick, acc: myAcc});
             if(mode === 'host') document.getElementById('host-settings').style.display='block';
-            if(mode === 'join') {
+            else {
                 conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
                 handleConn();
             }
@@ -129,8 +127,17 @@
 
     function handleConn() {
         conn.on('data', d => {
-            if(d.type === 'join') { players.push({id:d.id, nick:d.nick, acc: d.acc}); addBubble(d.id, d.nick, false, d.acc); if(players.length > 1) conn.send({type:'list', list:players}); }
-            if(d.type === 'list') { d.list.forEach(p => { if(!players.find(x=>x.id==p.id)) { players.push(p); addBubble(p.id, p.nick, false, p.acc); }}); }
+            if(d.type === 'join') { 
+                if(!players.find(p=>p.id===d.id)) players.push({id:d.id, nick:d.nick, acc:d.acc});
+                addBubble(d.id, d.nick, false, d.acc);
+                if(players.length > 1) conn.send({type:'list', list:players});
+            }
+            if(d.type === 'list') { 
+                d.list.forEach(p => { 
+                    if(!players.find(x=>x.id===p.id)) players.push(p); 
+                    addBubble(p.id, p.nick, p.id===myId, p.acc);
+                });
+            }
             if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){ b.style.left=d.x; b.style.top=d.y; }}
             if(d.type === 'acc_update') { updateBubbleAcc(d.id, d.acc); }
             if(d.type === 'start') { players = d.players; maxTurns = d.maxTurns; resetGameState(); show('scr-game'); startTurnLogic(); }
@@ -138,21 +145,24 @@
             if(d.type === 'finish') { history = d.history; showResults(); }
             if(d.type === 'vote_sync') { votes = d.votes; updateVoteDisplay(); }
             if(d.type === 'back_to_lobby') { show('scr-lobby'); }
+            if(d.type === 'typing') { if(myId !== players[turnIdx % players.length].id) document.getElementById('word-display').innerText = d.nick + " yazıyor..."; }
         });
     }
 
-    function addBubble(id, nick, isMe, acc = {hat: '', mus: ''}) {
+    function addBubble(id, nick, isMe, acc = {hat:'', gls:'', mus:''}) {
         if(document.getElementById('bub-'+id)) return;
         const b = document.createElement('div');
         b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = nick;
-        b.innerHTML += `<div class="acc hat">${acc.hat}</div><div class="acc mustache">${acc.mus}</div>`;
-        b.style.left = "50px"; b.style.top = "50px";
+        b.innerHTML += `<div class="acc hat">${acc.hat||''}</div><div class="acc glass">${acc.gls||''}</div><div class="acc mustache">${acc.mus||''}</div>`;
+        b.style.left = "20px"; b.style.top = "20px";
         if(isMe) makeDraggable(b, id);
         document.getElementById('lobby-area').appendChild(b);
     }
 
     function setAcc(type, val) {
-        if(type === 'hat') myAcc.hat = val; else myAcc.mus = val;
+        if(type === 'hat') myAcc.hat = val; 
+        else if(type === 'gls') myAcc.gls = val;
+        else myAcc.mus = val;
         updateBubbleAcc(myId, myAcc);
         if(conn) conn.send({type: 'acc_update', id: myId, acc: myAcc});
     }
@@ -160,8 +170,9 @@
     function updateBubbleAcc(id, acc) {
         const b = document.getElementById('bub-'+id);
         if(b) {
-            b.querySelector('.hat').innerText = acc.hat;
-            b.querySelector('.mustache').innerText = acc.mus;
+            b.querySelector('.hat').innerText = acc.hat || '';
+            b.querySelector('.glass').innerText = acc.gls || '';
+            b.querySelector('.mustache').innerText = acc.mus || '';
             let p = players.find(x => x.id === id); if(p) p.acc = acc;
         }
     }
@@ -184,12 +195,18 @@
     }
 
     function startTurnLogic() {
-        if(turnIdx >= maxTurns) { if(conn) conn.send({type:'finish', history: history}); showResults(); return; }
+        if(turnIdx >= maxTurns) { if(conn && myId === players[0].id) conn.send({type:'finish', history: history}); showResults(); return; }
         let current = players[turnIdx % players.length];
         const isMyTurn = current.id === myId;
-        if(isMyTurn) { audioPop.play(); startTimer(); document.getElementById('game-input').disabled = false; document.getElementById('game-input').focus(); document.getElementById('send-btn').disabled = false;}
-        else { document.getElementById('game-input').disabled = true; document.getElementById('send-btn').disabled = true; clearInterval(timerInterval); }
-        document.getElementById('word-display').innerText = isMyTurn ? (history.length ? document.getElementById('word-display').innerText : "İlk cümleyi yazarak kaosu başlat!") : current.nick + " yazıyor...";
+        document.getElementById('game-input').disabled = !isMyTurn;
+        document.getElementById('send-btn').disabled = !isMyTurn;
+        if(isMyTurn) { 
+            startTimer(); document.getElementById('game-input').focus(); 
+            if(turnIdx === 0) document.getElementById('word-display').innerText = "İlk cümleyi yaz!";
+        } else { 
+            clearInterval(timerInterval); 
+            document.getElementById('word-display').innerText = current.nick + " bekleniyor...";
+        }
     }
 
     function startTimer() {
@@ -197,13 +214,13 @@
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             t--; document.getElementById('timer').innerText = t;
-            if(t <= 5) { document.body.classList.add('panic'); audioTick.play(); } else { document.body.classList.remove('panic'); }
+            if(t <= 5) { document.body.classList.add('panic'); audioTick.play(); } else document.body.classList.remove('panic');
             if(t <= 0) { clearInterval(timerInterval); sendTurn(); }
         }, 1000);
     }
 
     function sendTurn() {
-        const val = document.getElementById('game-input').value || "Sessiz kaldı...";
+        const val = document.getElementById('game-input').value || "Kaosu başlattı!";
         history.push({nick: myNick, text: val});
         if(conn) conn.send({type:'play', text:val, nick: myNick});
         document.getElementById('game-input').value = ""; document.body.classList.remove('panic');
@@ -212,8 +229,8 @@
 
     function receiveTurn(t) {
         let words = t.split(' ').map(w => {
-            if(Math.random() < 0.2) return ['Meow', 'Bzzz', 'Woof', 'Kaos'][Math.floor(Math.random()*4)];
-            return w.split('').map(c => (Math.random() < 0.3) ? '?' : c).join('');
+            if(Math.random() < 0.25) return '🌀';
+            return w.split('').map(c => (Math.random() < 0.35) ? '*' : c).join('');
         }).join(' ');
         document.getElementById('word-display').innerText = words;
         turnIdx++; startTurnLogic();
@@ -231,9 +248,9 @@
         let maxV = 0, winner = '';
         resDiv.innerHTML = history.map((h, i) => {
             if((votes[i]||0) > maxV) { maxV = votes[i]; winner = h.nick; }
-            return `<div class="res-item" style="padding:10px; border-bottom:1px solid #eee; cursor:pointer; background:${myVoteIdx===i?'#d4edda':'white'}" onclick="castVote(${i})"><b>${h.nick}:</b> ${h.text} <span>🔥 ${votes[i]||0}</span></div>`;
+            return `<div style="padding:10px; border:2px solid ${myVoteIdx===i?'var(--success)':'#eee'}; margin:5px; border-radius:15px; cursor:pointer" onclick="castVote(${i})"><b>${h.nick}:</b> ${h.text} <span>🔥 ${votes[i]||0}</span></div>`;
         }).join('');
-        if(maxV > 0) document.getElementById('winner-text').innerText = "🏆 KAOS KRALI: " + winner;
+        if(maxV > 0) document.getElementById('winner-text').innerText = "🏆 KRAL: " + winner;
     }
 
     function startGame() {
@@ -245,6 +262,7 @@
 
     function resetGameState() { turnIdx = 0; history = []; votes = {}; myVoteIdx = -1; document.body.classList.remove('panic'); }
     function backToLobby() { if(conn) conn.send({type:'back_to_lobby'}); show('scr-lobby'); }
+    function sendTyping() { if(conn) conn.send({type:'typing', nick:myNick}); }
     function show(id) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 </script>
 </body>
