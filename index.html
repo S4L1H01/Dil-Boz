@@ -2,81 +2,103 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dil-Boz Online 🌀 | Mega Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dil-Boz: Neon Kaos 🌀</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --blurple: #5865f2; --green: #43b581; --dark: #36393f; --header: #202225; }
-        body { background: #2f3136; color: white; font-family: 'Whitney', 'Helvetica Neue', sans-serif; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        :root { --neon-pink: #ff00ff; --neon-blue: #00ffff; --neon-purple: #9d00ff; --dark: #0a0a0a; }
+        body { 
+            background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; 
+            margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh;
+            background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px); background-size: 30px 30px;
+        }
         
-        /* BÜYÜTÜLMÜŞ ARAYÜZ */
-        .panel { background: var(--dark); width: 95%; max-width: 800px; height: 85vh; border-radius: 20px; border: 3px solid var(--blurple); display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); overflow: hidden; }
-        .header { background: var(--header); padding: 25px; font-size: 2rem; font-weight: bold; text-align: center; border-bottom: 2px solid #222; }
-        .content { flex: 1; padding: 40px; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .panel { 
+            background: rgba(20, 20, 20, 0.95); width: 95%; max-width: 700px; height: 90vh; 
+            border-radius: 30px; border: 4px solid var(--neon-purple); display: flex; flex-direction: column; 
+            box-shadow: 0 0 20px var(--neon-purple), inset 0 0 10px var(--neon-purple); overflow: hidden; 
+        }
+
+        .header { 
+            background: #000; padding: 20px; font-size: 2.2rem; font-weight: bold; text-align: center; 
+            text-shadow: 0 0 10px var(--neon-pink); color: var(--neon-pink); border-bottom: 2px solid var(--neon-pink);
+        }
+
+        .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; position: relative; }
         .content.active { display: flex; }
 
-        /* MULTIPLAYER LOBİ ALANI */
-        #lobby-area { width: 100%; flex: 1; background: #202225; border-radius: 15px; position: relative; margin: 20px 0; border: 2px dashed #444; }
-        .player-bubble { position: absolute; padding: 15px 30px; background: var(--blurple); border-radius: 50px; cursor: grab; font-weight: bold; font-size: 1.2rem; user-select: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 100; transition: transform 0.1s; border: 2px solid rgba(255,255,255,0.2); }
-        .player-bubble:active { cursor: grabbing; transform: scale(1.1); }
+        /* LOBİ & SINIRLANDIRILMIŞ ALAN */
+        #lobby-area { 
+            width: 100%; height: 350px; background: rgba(0,0,0,0.5); border-radius: 20px; 
+            position: relative; margin: 15px 0; border: 2px solid var(--neon-blue); overflow: hidden; 
+        }
 
-        /* FORM ELEMANLARI */
-        input { background: #40444b; color: white; border: 2px solid #222; padding: 20px; border-radius: 12px; width: 80%; font-size: 1.2rem; margin-bottom: 15px; transition: 0.3s; }
-        input:focus { border-color: var(--blurple); outline: none; }
-        button { background: var(--blurple); color: white; border: none; padding: 20px 40px; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 1.3rem; transition: 0.3s; margin: 10px; }
-        button:hover { background: #4752c4; transform: translateY(-3px); }
-        .btn-green { background: var(--green); }
-        .btn-green:hover { background: #3ca374; }
+        .player-bubble { 
+            position: absolute; padding: 12px 25px; background: var(--neon-blue); color: #000;
+            border-radius: 50px; cursor: grab; font-weight: bold; font-size: 1.1rem; user-select: none;
+            box-shadow: 0 0 15px var(--neon-blue); z-index: 100; touch-action: none; 
+        }
 
-        /* OYUN EKRANI ÖZELLİKLERİ */
-        .word-box { background: #4f545c; padding: 40px; border-radius: 20px; font-size: 2.5rem; color: #faa61a; font-weight: bold; margin: 20px 0; border: 3px solid var(--blurple); text-align: center; min-width: 80%; }
-        .id-badge { background: #202225; padding: 10px 20px; border-radius: 50px; font-family: monospace; color: var(--green); cursor: pointer; border: 1px solid var(--green); }
+        /* INPUT & BUTONLAR */
+        input { 
+            background: #1a1a1a; color: white; border: 2px solid var(--neon-blue); padding: 18px; 
+            border-radius: 15px; width: 85%; font-size: 1.1rem; margin-bottom: 10px; box-shadow: inset 0 0 5px var(--neon-blue);
+        }
+        button { 
+            background: var(--neon-purple); color: white; border: none; padding: 15px 35px; 
+            border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 1.2rem; transition: 0.2s; 
+            box-shadow: 0 0 15px var(--neon-purple); margin: 5px;
+        }
+        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+        button:disabled { background: #444; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
+
+        .word-box { 
+            background: #000; padding: 30px; border-radius: 20px; font-size: 2rem; 
+            color: #faa61a; font-weight: bold; margin: 15px 0; border: 2px solid var(--neon-pink); 
+            text-align: center; width: 90%; box-shadow: 0 0 15px var(--neon-pink);
+        }
+
+        .id-badge { color: var(--neon-blue); font-weight: bold; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <div class="panel">
-        <div class="header">DİL-BOZ ONLİNE 🌀</div>
+        <div class="header">DİL-BOZ: NEON 🌀</div>
 
         <div id="screen-login" class="content active">
-            <input type="text" id="input-nick" placeholder="Bir nickname seç...">
-            <div style="display: flex; width: 100%; justify-content: center;">
-                <button onclick="startMode('host')">Lobi Kur</button>
-                <button onclick="startMode('join')" class="btn-green">Odaya Katıl</button>
-            </div>
-            <input type="text" id="input-room-id" placeholder="Oda Kodunu Buraya Yapıştır..." style="display:none; margin-top: 20px;">
+            <input type="text" id="input-nick" placeholder="Nick Seç...">
+            <button onclick="startMode('host')">Lobi Kur</button>
+            <button onclick="startMode('join')" style="background: var(--neon-blue); color: black;">Odaya Katıl</button>
+            <input type="text" id="input-room-id" placeholder="Oda Kodunu Yapıştır..." style="display:none; margin-top: 15px;">
         </div>
 
         <div id="screen-lobby" class="content">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span>Oda Kodun (Kopyala): </span>
-                <span class="id-badge" id="display-my-id" onclick="copyId()">---</span>
-            </div>
+            <p>Oda Kodu: <span class="id-badge" id="display-my-id" onclick="copyId()">Kopyala</span></p>
             <div id="lobby-area"></div>
-            <p id="status-msg">Arkadaşının bağlanması bekleniyor...</p>
-            <button id="btn-start-game" onclick="broadcastStart()" style="display:none;" class="btn-green">OYUNU BAŞLAT! ➔</button>
+            <p id="status-msg">Bağlantı bekleniyor...</p>
+            <button id="btn-start-game" onclick="broadcastStart()" style="display:none;">OYUNU BAŞLAT ➔</button>
         </div>
 
         <div id="screen-game" class="content">
-            <h2 id="turn-info">Sıra Kimde?</h2>
-            <div class="word-box" id="game-word">OYUN BAŞLIYOR...</div>
-            <input type="text" id="input-game" placeholder="Cümleyi yaz veya anladığını gir...">
-            <button onclick="sendTurn()">GÖNDER</button>
+            <h3 id="turn-info">Bekleniyor...</h3>
+            <div class="word-box" id="game-word">HAZIRLAN...</div>
+            <input type="text" id="input-game" placeholder="Buraya yaz..." disabled>
+            <button id="btn-send" onclick="sendTurn()" disabled>GÖNDER</button>
         </div>
     </div>
 
     <script>
         let peer, conn, myId, myNick;
         let isHost = false;
-        let participants = {}; 
+        let playerList = []; // Katılma sırasını tutar
+        let currentTurnIndex = 0;
         const charMap = {'a':'α','e':'€','u':'μ','ü':'ϋ','s':'§','ş':'∫','o':'0','ö':'θ','i':'ı','ı':'i','g':'9'};
 
         function startMode(mode) {
             myNick = document.getElementById('input-nick').value || "Oyuncu";
-            if(mode === 'host') {
-                isHost = true;
-                initPeer();
-            } else {
+            if(mode === 'host') { isHost = true; initPeer(); } 
+            else { 
                 document.getElementById('input-room-id').style.display = 'block';
                 let target = document.getElementById('input-room-id').value;
                 if(target) initPeer(target);
@@ -90,31 +112,24 @@
                 document.getElementById('display-my-id').innerText = id;
                 showScreen('screen-lobby');
                 addBubble(id, myNick, true);
-                if(targetId) {
-                    conn = peer.connect(targetId);
-                    setupConn();
-                }
+                playerList.push({id: id, nick: myNick});
+                if(targetId) { conn = peer.connect(targetId); setupConn(); }
             });
-            peer.on('connection', c => {
-                conn = c;
-                isHost = true;
-                setupConn();
-                document.getElementById('btn-start-game').style.display = 'block';
-            });
+            peer.on('connection', c => { conn = c; isHost = true; setupConn(); document.getElementById('btn-start-game').style.display = 'block'; });
         }
 
         function setupConn() {
             conn.on('open', () => {
                 conn.send({type: 'hello', nick: myNick, id: myId});
-                document.getElementById('status-msg').innerText = "Bağlantı Kuruldu! Baloncukları sürükleyebilirsin.";
             });
             conn.on('data', data => {
                 if(data.type === 'hello') {
                     addBubble(data.id, data.nick, false);
-                    if(isHost) conn.send({type: 'hello', nick: myNick, id: myId}); // Karşılık ver
+                    playerList.push({id: data.id, nick: data.nick});
+                    if(isHost) conn.send({type: 'hello', nick: myNick, id: myId});
                 }
                 if(data.type === 'move') updateBubblePos(data.id, data.x, data.y);
-                if(data.type === 'start') showScreen('screen-game');
+                if(data.type === 'start') { showScreen('screen-game'); updateTurnUI(); }
                 if(data.type === 'turn') receiveTurn(data.text);
             });
         }
@@ -125,32 +140,33 @@
             b.id = 'bub-' + id;
             b.className = 'player-bubble';
             b.innerText = nick;
-            b.style.left = "100px"; b.style.top = "100px";
-            if(isMe) {
-                b.style.background = "#faa61a";
-                dragElement(b, id);
-            }
+            b.style.left = "50px"; b.style.top = "50px";
+            if(isMe) { b.style.boxShadow = "0 0 20px white"; makeDraggable(b, id); }
             document.getElementById('lobby-area').appendChild(b);
         }
 
-        function dragElement(el, id) {
-            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-            el.onmousedown = dragMouseDown;
-            function dragMouseDown(e) {
-                pos3 = e.clientX; pos4 = e.clientY;
-                document.onmouseup = () => { document.onmousemove = null; };
-                document.onmousemove = elementDrag;
-            }
-            function elementDrag(e) {
-                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
-                pos3 = e.clientX; pos4 = e.clientY;
-                let top = el.offsetTop - pos2;
-                let left = el.offsetLeft - pos1;
-                // Sınırlandırma
-                if(top > 0 && top < 350) el.style.top = top + "px";
-                if(left > 0 && left < 600) el.style.left = left + "px";
+        // TELEFON VE PC UYUMLU SÜRÜKLEME
+        function makeDraggable(el, id) {
+            const area = document.getElementById('lobby-area');
+            const move = (e) => {
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = area.getBoundingClientRect();
+                
+                let x = clientX - rect.left - el.offsetWidth / 2;
+                let y = clientY - rect.top - el.offsetHeight / 2;
+
+                // SINIRLAR (Alanın dışına çıkamaz)
+                if(x < 0) x = 0; if(x > rect.width - el.offsetWidth) x = rect.width - el.offsetWidth;
+                if(y < 0) y = 0; if(y > rect.height - el.offsetHeight) y = rect.height - el.offsetHeight;
+
+                el.style.left = x + "px"; el.style.top = y + "px";
                 if(conn) conn.send({type: 'move', id: id, x: el.style.left, y: el.style.top});
-            }
+            };
+            el.addEventListener('mousedown', () => document.addEventListener('mousemove', move));
+            el.addEventListener('touchstart', () => document.addEventListener('touchmove', move));
+            document.addEventListener('mouseup', () => { document.removeEventListener('mousemove', move); });
+            document.addEventListener('touchend', () => { document.removeEventListener('touchmove', move); });
         }
 
         function updateBubblePos(id, x, y) {
@@ -158,24 +174,38 @@
             if(b) { b.style.left = x; b.style.top = y; }
         }
 
-        function broadcastStart() {
-            conn.send({type: 'start'});
-            showScreen('screen-game');
+        function broadcastStart() { conn.send({type: 'start'}); showScreen('screen-game'); updateTurnUI(); }
+
+        function updateTurnUI() {
+            let currentPlayer = playerList[currentTurnIndex % playerList.length];
+            document.getElementById('turn-info').innerText = "Sıra: " + currentPlayer.nick;
+            
+            if(currentPlayer.id === myId) {
+                document.getElementById('input-game').disabled = false;
+                document.getElementById('btn-send').disabled = false;
+                document.getElementById('turn-info').style.color = "var(--neon-blue)";
+            } else {
+                document.getElementById('input-game').disabled = true;
+                document.getElementById('btn-send').disabled = true;
+                document.getElementById('turn-info').style.color = "white";
+                document.getElementById('game-word').innerText = "Arkadaşın yazıyor...";
+            }
         }
 
         function sendTurn() {
             let txt = document.getElementById('input-game').value;
             if(!txt) return;
             conn.send({type: 'turn', text: txt});
-            document.getElementById('game-word').innerText = "BEKLENİYOR...";
+            currentTurnIndex++;
             document.getElementById('input-game').value = "";
+            updateTurnUI();
         }
 
         function receiveTurn(txt) {
-            // Bozma işlemi
-            let corrupted = txt.split('').map(c => (charMap[c.toLowerCase()] && Math.random() > 0.5) ? charMap[c.toLowerCase()] : c).join('');
+            let corrupted = txt.split('').map(c => (charMap[c.toLowerCase()] && Math.random() > 0.4) ? charMap[c.toLowerCase()] : c).join('');
             document.getElementById('game-word').innerText = corrupted;
-            document.getElementById('turn-info').innerText = "Sıra Sende! Ne anladın?";
+            currentTurnIndex++;
+            updateTurnUI();
         }
 
         function showScreen(id) {
@@ -183,10 +213,7 @@
             document.getElementById(id).classList.add('active');
         }
 
-        function copyId() {
-            navigator.clipboard.writeText(myId);
-            alert("Oda kodu kopyalandı!");
-        }
+        function copyId() { navigator.clipboard.writeText(myId); alert("Kod kopyalandı!"); }
     </script>
 </body>
 </html>
