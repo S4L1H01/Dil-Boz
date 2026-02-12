@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DİL-BOZ | Ultra Kaos v3</title>
+    <title>DİL-BOZ | Kusursuz Kaos</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --bg: #F0F4F8; --primary: #6E7BFF; --secondary: #FF85A1; --accent: #FFD166; --text: #2D3436; --success: #00B894; }
@@ -15,13 +15,13 @@
         .active { display: flex; }
         #lobby-container { display: flex; width: 100%; gap: 15px; flex-wrap: wrap; }
         #lobby-area { flex: 2; height: 350px; background: #F8FAFC; border-radius: 30px; position: relative; border: 4px dashed #CBD5E1; overflow: hidden; min-width: 300px; }
-        #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); max-height: 350px; overflow-y: auto; }
+        #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); max-height: 350px; }
         .player-bubble { position: absolute; padding: 12px 22px; background: var(--secondary); color: white; border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .acc { position: absolute; pointer-events: none; font-size: 30px; left: 50%; transform: translateX(-50%); z-index: 10; }
         .hat { top: -35px; } .glass { top: -10px; font-size: 22px; } .mustache { bottom: -18px; }
-        .acc-option { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 10px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; width: 35px; text-align: center; }
+        .acc-option { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 10px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; }
         #timer { font-size: 2.5rem; font-weight: bold; color: var(--secondary); }
-        .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; min-height: 60px; }
+        .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; min-height: 60px; word-wrap: break-word; }
         .panic { background-color: #ffcccc !important; }
         button { padding: 12px 25px; border-radius: 15px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin: 5px; }
         .btn-green { background: var(--success); } .btn-blue { background: var(--primary); } .btn-red { background: #FF7675; }
@@ -51,9 +51,7 @@
                 <div class="acc-option" onclick="setAcc('hat', '👑')">👑</div>
                 <div class="acc-option" onclick="setAcc('hat', '💩')">💩</div>
                 <div class="acc-option" onclick="setAcc('gls', '🕶️')">🕶️</div>
-                <div class="acc-option" onclick="setAcc('gls', '🧐')">🧐</div>
                 <div class="acc-option" onclick="setAcc('mus', '👨🏻')">👨🏻</div>
-                <div class="acc-option" onclick="setAcc('mus', '🧔')">🧔</div>
                 <div class="acc-option" onclick="setAcc('mus', '🥸')">🥸</div>
             </div>
         </div>
@@ -74,7 +72,7 @@
     <div id="scr-final" class="content">
         <h2 id="winner-text">Oylama!</h2>
         <div id="final-results" style="width:100%"></div>
-        <button class="btn-green" onclick="location.reload()">LOBİYE DÖN</button>
+        <button class="btn-green" onclick="location.reload()">BAŞA DÖN</button>
     </div>
 </div>
 
@@ -88,58 +86,57 @@
         myNick = document.getElementById('nick').value || "İsimsiz";
         const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
         peer = new Peer(isHost ? shortId : undefined);
-        
         peer.on('open', id => {
             myId = id; document.getElementById('my-id').innerText = id;
             show('scr-lobby'); addBubble(id, myNick, true);
             players = [{id, nick: myNick, acc: myAcc}];
             if(isHost) {
                 document.getElementById('host-settings').style.display='block';
-                peer.on('connection', conn => {
-                    connections.push(conn);
-                    handleData(conn);
-                });
+                peer.on('connection', conn => { connections.push(conn); handleData(conn); });
             } else {
                 const conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
-                connections = [conn];
-                handleData(conn);
+                connections = [conn]; handleData(conn);
             }
         });
     }
 
     function broadcast(data) {
-        connections.forEach(c => c.send(data));
+        connections.forEach(c => { if(c.open) c.send(data); });
     }
 
     function handleData(conn) {
         conn.on('open', () => { if(!isHost) conn.send({type:'join', nick:myNick, id:myId, acc:myAcc}); });
         conn.on('data', d => {
-            if(isHost) broadcast(d); // Host her şeyi herkese dağıtır (Relay)
+            if(isHost && d.type !== 'sync') broadcast(d); 
 
             if(d.type === 'join') {
-                if(!players.find(p=>p.id===d.id)) {
-                    players.push({id:d.id, nick:d.nick, acc:d.acc});
-                    addBubble(d.id, d.nick, false, d.acc);
-                }
+                if(!players.find(p=>p.id===d.id)) { players.push({id:d.id, nick:d.nick, acc:d.acc}); addBubble(d.id, d.nick, false, d.acc); }
                 if(isHost) broadcast({type:'list', list:players});
             }
             if(d.type === 'list') {
-                d.list.forEach(p => {
-                    if(!players.find(x=>x.id===p.id)) players.push(p);
-                    addBubble(p.id, p.nick, p.id===myId, p.acc);
-                });
+                d.list.forEach(p => { if(!players.find(x=>x.id===p.id)) { players.push(p); addBubble(p.id, p.nick, p.id===myId, p.acc); }});
             }
             if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){ b.style.left=d.x; b.style.top=d.y; }}
             if(d.type === 'acc_update') { updateBubbleAcc(d.id, d.acc); }
-            if(d.type === 'start') { players = d.players; maxTurns = d.maxTurns; history = []; turnIdx = 0; show('scr-game'); startTurnLogic(); }
-            if(d.type === 'play') { 
-                history.push({nick: d.nick, text: d.text}); 
-                turnIdx++; 
-                receiveTurn(d.text); 
+            
+            if(d.type === 'sync') {
+                turnIdx = d.turnIdx; history = d.history; maxTurns = d.maxTurns; players = d.players;
+                if(d.state === 'game') { show('scr-game'); startTurnLogic(d.lastText); }
+                if(d.state === 'final') { showResults(); }
+            }
+
+            if(d.type === 'play') {
+                if(isHost) {
+                    history.push({nick: d.nick, text: d.text});
+                    turnIdx++;
+                    let state = (turnIdx >= maxTurns) ? 'final' : 'game';
+                    broadcast({type:'sync', state, turnIdx, history, players, maxTurns, lastText: d.text});
+                    if(state === 'final') showResults(); else startTurnLogic(d.text);
+                }
             }
             if(d.type === 'typing') { 
                 let current = players[turnIdx % players.length];
-                if(myId !== current.id) document.getElementById('word-display').innerText = d.nick + " yazıyor..."; 
+                if(myId !== current.id) document.getElementById('word-display').innerText = d.nick + " bozuyor..."; 
             }
             if(d.type === 'vote_sync') { votes = d.votes; updateVoteDisplay(); }
         });
@@ -160,7 +157,6 @@
             b.querySelector('.hat').innerText = acc.hat || '';
             b.querySelector('.glass').innerText = acc.gls || '';
             b.querySelector('.mustache').innerText = acc.mus || '';
-            let p = players.find(x => x.id === id); if(p) p.acc = acc;
         }
     }
 
@@ -187,17 +183,24 @@
         broadcast({type: 'acc_update', id: myId, acc: myAcc});
     }
 
-    function startTurnLogic() {
-        if(turnIdx >= maxTurns) { showResults(); return; }
+    function startTurnLogic(lastText) {
         let current = players[turnIdx % players.length];
         const isMyTurn = current.id === myId;
         document.getElementById('game-input').disabled = !isMyTurn;
         document.getElementById('send-btn').disabled = !isMyTurn;
+        document.body.classList.remove('panic');
         
         if(isMyTurn) {
             startTimer();
             document.getElementById('game-input').focus();
-            if(turnIdx === 0) document.getElementById('word-display').innerText = "İlk cümleyi sen yaz!";
+            if(turnIdx === 0) document.getElementById('word-display').innerText = "İlk cümleyi yaz!";
+            else {
+                let corrupted = lastText.split(' ').map(w => {
+                    if(Math.random() < 0.2) return '🌀';
+                    return w.split('').map(c => (Math.random() < 0.3) ? '*' : c).join('');
+                }).join(' ');
+                document.getElementById('word-display').innerText = corrupted;
+            }
         } else {
             clearInterval(timerInterval);
             document.getElementById('word-display').innerText = current.nick + " bekleniyor...";
@@ -209,25 +212,24 @@
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             t--; document.getElementById('timer').innerText = t;
-            if(t <= 5) { document.body.classList.add('panic'); audioTick.play(); } else document.body.classList.remove('panic');
+            if(t <= 5) { document.body.classList.add('panic'); audioTick.play(); }
             if(t <= 0) { clearInterval(timerInterval); sendTurn(); }
         }, 1000);
     }
 
     function sendTurn() {
-        const val = document.getElementById('game-input').value || "Kaos!";
-        broadcast({type:'play', text:val, nick: myNick});
+        const val = document.getElementById('game-input').value || "Sessiz kaldı...";
         document.getElementById('game-input').value = "";
-        document.body.classList.remove('panic');
-    }
-
-    function receiveTurn(t) {
-        let words = t.split(' ').map(w => {
-            if(Math.random() < 0.2) return '🌀';
-            return w.split('').map(c => (Math.random() < 0.3) ? '*' : c).join('');
-        }).join(' ');
-        document.getElementById('word-display').innerText = words;
-        startTurnLogic();
+        let target = isHost ? {send: (d) => handleData({on:()=>{}, send:()=>{}}).on('data', d)} : connections[0];
+        if(isHost) {
+            history.push({nick: myNick, text: val});
+            turnIdx++;
+            let state = (turnIdx >= maxTurns) ? 'final' : 'game';
+            broadcast({type:'sync', state, turnIdx, history, players, maxTurns, lastText: val});
+            if(state === 'final') showResults(); else startTurnLogic(val);
+        } else {
+            connections[0].send({type:'play', text:val, nick: myNick});
+        }
     }
 
     function showResults() { show('scr-final'); updateVoteDisplay(); }
@@ -252,7 +254,10 @@
     function startGame() {
         const mt = parseInt(document.getElementById('turn-select').value);
         const shuffled = [...players].sort(() => Math.random() - 0.5);
-        broadcast({type:'start', players:shuffled, maxTurns: mt});
+        broadcast({type:'sync', state: 'game', turnIdx: 0, history: [], players: shuffled, maxTurns: mt, lastText: ''});
+        // Host için de başlat
+        turnIdx = 0; history = []; players = shuffled; maxTurns = mt;
+        show('scr-game'); startTurnLogic('');
     }
 
     function sendTyping() { broadcast({type:'typing', nick:myNick}); }
