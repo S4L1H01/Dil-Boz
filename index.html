@@ -3,217 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dil-Boz: Neon Kaos 🌀</title>
+    <title>Dil-Boz | Sade Kaos</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --neon-pink: #ff00ff; --neon-blue: #00ffff; --neon-purple: #9d00ff; --dark: #0a0a0a; }
-        body { 
-            background: var(--dark); color: white; font-family: 'Segoe UI', sans-serif; 
-            margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh;
-            background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px); background-size: 30px 30px;
-        }
-        
-        .panel { 
-            background: rgba(20, 20, 20, 0.95); width: 95%; max-width: 700px; height: 90vh; 
-            border-radius: 30px; border: 4px solid var(--neon-purple); display: flex; flex-direction: column; 
-            box-shadow: 0 0 20px var(--neon-purple), inset 0 0 10px var(--neon-purple); overflow: hidden; 
-        }
-
-        .header { 
-            background: #000; padding: 20px; font-size: 2.2rem; font-weight: bold; text-align: center; 
-            text-shadow: 0 0 10px var(--neon-pink); color: var(--neon-pink); border-bottom: 2px solid var(--neon-pink);
-        }
-
+        body { background: #121212; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .panel { background: #1e1e1e; width: 90%; max-width: 600px; height: 80vh; border-radius: 16px; display: flex; flex-direction: column; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .header { padding: 20px; font-size: 1.5rem; font-weight: 600; text-align: center; border-bottom: 1px solid #333; letter-spacing: 1px; }
         .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .content.active { display: flex; }
+        .active { display: flex; }
+        
+        #lobby-area { width: 100%; height: 250px; background: #161616; border-radius: 12px; position: relative; margin: 15px 0; overflow: hidden; border: 1px solid #222; }
+        .player-bubble { position: absolute; padding: 10px 20px; background: #37474f; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 0.9rem; touch-action: none; border: 1px solid #546e7a; }
 
-        /* LOBİ & SINIRLANDIRILMIŞ ALAN */
-        #lobby-area { 
-            width: 100%; height: 350px; background: rgba(0,0,0,0.5); border-radius: 20px; 
-            position: relative; margin: 15px 0; border: 2px solid var(--neon-blue); overflow: hidden; 
-        }
+        input, select { background: #2c2c2c; color: white; border: 1px solid #444; padding: 14px; border-radius: 8px; width: 80%; font-size: 1rem; margin-bottom: 10px; outline: none; }
+        button { background: #f5f5f5; color: #121212; border: none; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; margin: 5px; }
+        button:hover { background: #ffffff; transform: translateY(-2px); }
+        button:disabled { background: #333; color: #777; cursor: not-allowed; transform: none; }
 
-        .player-bubble { 
-            position: absolute; padding: 12px 25px; background: var(--neon-blue); color: #000;
-            border-radius: 50px; cursor: grab; font-weight: bold; font-size: 1.1rem; user-select: none;
-            box-shadow: 0 0 15px var(--neon-blue); z-index: 100; touch-action: none; 
-        }
-
-        /* INPUT & BUTONLAR */
-        input { 
-            background: #1a1a1a; color: white; border: 2px solid var(--neon-blue); padding: 18px; 
-            border-radius: 15px; width: 85%; font-size: 1.1rem; margin-bottom: 10px; box-shadow: inset 0 0 5px var(--neon-blue);
-        }
-        button { 
-            background: var(--neon-purple); color: white; border: none; padding: 15px 35px; 
-            border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 1.2rem; transition: 0.2s; 
-            box-shadow: 0 0 15px var(--neon-purple); margin: 5px;
-        }
-        button:hover { transform: scale(1.05); filter: brightness(1.2); }
-        button:disabled { background: #444; box-shadow: none; cursor: not-allowed; opacity: 0.5; }
-
-        .word-box { 
-            background: #000; padding: 30px; border-radius: 20px; font-size: 2rem; 
-            color: #faa61a; font-weight: bold; margin: 15px 0; border: 2px solid var(--neon-pink); 
-            text-align: center; width: 90%; box-shadow: 0 0 15px var(--neon-pink);
-        }
-
-        .id-badge { color: var(--neon-blue); font-weight: bold; cursor: pointer; text-decoration: underline; }
+        .word-box { background: #252525; padding: 25px; border-radius: 12px; font-size: 1.8rem; color: #81d4fa; font-weight: bold; margin: 15px 0; text-align: center; width: 90%; border: 1px solid #333; }
+        .code-display { font-family: monospace; color: #81c784; font-size: 1.2rem; background: #161616; padding: 5px 15px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
-    <div class="panel">
-        <div class="header">DİL-BOZ: NEON 🌀</div>
+<div class="panel">
+    <div class="header">DİL-BOZ</div>
 
-        <div id="screen-login" class="content active">
-            <input type="text" id="input-nick" placeholder="Nick Seç...">
-            <button onclick="startMode('host')">Lobi Kur</button>
-            <button onclick="startMode('join')" style="background: var(--neon-blue); color: black;">Odaya Katıl</button>
-            <input type="text" id="input-room-id" placeholder="Oda Kodunu Yapıştır..." style="display:none; margin-top: 15px;">
-        </div>
-
-        <div id="screen-lobby" class="content">
-            <p>Oda Kodu: <span class="id-badge" id="display-my-id" onclick="copyId()">Kopyala</span></p>
-            <div id="lobby-area"></div>
-            <p id="status-msg">Bağlantı bekleniyor...</p>
-            <button id="btn-start-game" onclick="broadcastStart()" style="display:none;">OYUNU BAŞLAT ➔</button>
-        </div>
-
-        <div id="screen-game" class="content">
-            <h3 id="turn-info">Bekleniyor...</h3>
-            <div class="word-box" id="game-word">HAZIRLAN...</div>
-            <input type="text" id="input-game" placeholder="Buraya yaz..." disabled>
-            <button id="btn-send" onclick="sendTurn()" disabled>GÖNDER</button>
+    <div id="scr-login" class="content active">
+        <input type="text" id="nick" placeholder="İsim">
+        <button onclick="setup('host')">Lobi Kur</button>
+        <button onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
+        <div id="join-box" style="display:none; width:100%; text-align:center;">
+            <input type="text" id="room-id" placeholder="6 Haneli Kod">
+            <button onclick="setup('join')">Giriş Yap</button>
         </div>
     </div>
 
-    <script>
-        let peer, conn, myId, myNick;
-        let isHost = false;
-        let playerList = []; // Katılma sırasını tutar
-        let currentTurnIndex = 0;
-        const charMap = {'a':'α','e':'€','u':'μ','ü':'ϋ','s':'§','ş':'∫','o':'0','ö':'θ','i':'ı','ı':'i','g':'9'};
+    <div id="scr-lobby" class="content">
+        <p>Oda Kodu: <span class="code-display" id="my-id">...</span></p>
+        <select id="turn-count">
+            <option value="5">5 Tur</option>
+            <option value="10" selected>10 Tur</option>
+            <option value="20">20 Tur</option>
+        </select>
+        <div id="lobby-area"></div>
+        <button id="start-btn" onclick="startGame()" style="display:none">Oyunu Başlat</button>
+    </div>
 
-        function startMode(mode) {
-            myNick = document.getElementById('input-nick').value || "Oyuncu";
-            if(mode === 'host') { isHost = true; initPeer(); } 
-            else { 
-                document.getElementById('input-room-id').style.display = 'block';
-                let target = document.getElementById('input-room-id').value;
-                if(target) initPeer(target);
+    <div id="scr-game" class="content">
+        <h4 id="turn-msg">Hazırlan...</h4>
+        <div class="word-box" id="word-display">...</div>
+        <input type="text" id="game-input" placeholder="Yazınız..." disabled>
+        <button id="send-btn" onclick="sendTurn()" disabled>Gönder</button>
+    </div>
+</div>
+
+<script>
+    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 10;
+    const charMap = {'a':'α','e':'€','u':'μ','ü':'ϋ','s':'§','ş':'∫','o':'0','ö':'θ','i':'ı'};
+
+    function setup(mode) {
+        myNick = document.getElementById('nick').value || "Anonim";
+        // 6 haneli kısa kod üretimi
+        const shortId = Math.random().toString(36).substring(2, 8).toUpperCase();
+        peer = new Peer(mode === 'host' ? shortId : undefined);
+        
+        peer.on('open', id => {
+            myId = id;
+            document.getElementById('my-id').innerText = id;
+            show('scr-lobby');
+            addBubble(id, "?", true); 
+            players.push({id: id, nick: myNick});
+            if(mode === 'join') {
+                conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
+                handleConn();
             }
-        }
+        });
+        peer.on('connection', c => { conn = c; handleConn(); document.getElementById('start-btn').style.display='block'; });
+    }
 
-        function initPeer(targetId = null) {
-            peer = new Peer();
-            peer.on('open', id => {
-                myId = id;
-                document.getElementById('display-my-id').innerText = id;
-                showScreen('screen-lobby');
-                addBubble(id, myNick, true);
-                playerList.push({id: id, nick: myNick});
-                if(targetId) { conn = peer.connect(targetId); setupConn(); }
-            });
-            peer.on('connection', c => { conn = c; isHost = true; setupConn(); document.getElementById('btn-start-game').style.display = 'block'; });
-        }
-
-        function setupConn() {
-            conn.on('open', () => {
-                conn.send({type: 'hello', nick: myNick, id: myId});
-            });
-            conn.on('data', data => {
-                if(data.type === 'hello') {
-                    addBubble(data.id, data.nick, false);
-                    playerList.push({id: data.id, nick: data.nick});
-                    if(isHost) conn.send({type: 'hello', nick: myNick, id: myId});
-                }
-                if(data.type === 'move') updateBubblePos(data.id, data.x, data.y);
-                if(data.type === 'start') { showScreen('screen-game'); updateTurnUI(); }
-                if(data.type === 'turn') receiveTurn(data.text);
-            });
-        }
-
-        function addBubble(id, nick, isMe) {
-            if(document.getElementById('bub-'+id)) return;
-            const b = document.createElement('div');
-            b.id = 'bub-' + id;
-            b.className = 'player-bubble';
-            b.innerText = nick;
-            b.style.left = "50px"; b.style.top = "50px";
-            if(isMe) { b.style.boxShadow = "0 0 20px white"; makeDraggable(b, id); }
-            document.getElementById('lobby-area').appendChild(b);
-        }
-
-        // TELEFON VE PC UYUMLU SÜRÜKLEME
-        function makeDraggable(el, id) {
-            const area = document.getElementById('lobby-area');
-            const move = (e) => {
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                const rect = area.getBoundingClientRect();
-                
-                let x = clientX - rect.left - el.offsetWidth / 2;
-                let y = clientY - rect.top - el.offsetHeight / 2;
-
-                // SINIRLAR (Alanın dışına çıkamaz)
-                if(x < 0) x = 0; if(x > rect.width - el.offsetWidth) x = rect.width - el.offsetWidth;
-                if(y < 0) y = 0; if(y > rect.height - el.offsetHeight) y = rect.height - el.offsetHeight;
-
-                el.style.left = x + "px"; el.style.top = y + "px";
-                if(conn) conn.send({type: 'move', id: id, x: el.style.left, y: el.style.top});
-            };
-            el.addEventListener('mousedown', () => document.addEventListener('mousemove', move));
-            el.addEventListener('touchstart', () => document.addEventListener('touchmove', move));
-            document.addEventListener('mouseup', () => { document.removeEventListener('mousemove', move); });
-            document.addEventListener('touchend', () => { document.removeEventListener('touchmove', move); });
-        }
-
-        function updateBubblePos(id, x, y) {
-            const b = document.getElementById('bub-'+id);
-            if(b) { b.style.left = x; b.style.top = y; }
-        }
-
-        function broadcastStart() { conn.send({type: 'start'}); showScreen('screen-game'); updateTurnUI(); }
-
-        function updateTurnUI() {
-            let currentPlayer = playerList[currentTurnIndex % playerList.length];
-            document.getElementById('turn-info').innerText = "Sıra: " + currentPlayer.nick;
-            
-            if(currentPlayer.id === myId) {
-                document.getElementById('input-game').disabled = false;
-                document.getElementById('btn-send').disabled = false;
-                document.getElementById('turn-info').style.color = "var(--neon-blue)";
-            } else {
-                document.getElementById('input-game').disabled = true;
-                document.getElementById('btn-send').disabled = true;
-                document.getElementById('turn-info').style.color = "white";
-                document.getElementById('game-word').innerText = "Arkadaşın yazıyor...";
+    function handleConn() {
+        conn.on('open', () => conn.send({type:'join', nick:myNick, id:myId}));
+        conn.on('data', d => {
+            if(d.type === 'join') {
+                players.push({id:d.id, nick:d.nick});
+                addBubble(d.id, "?", false);
+                if(players.length > 1) conn.send({type:'list', list:players});
             }
-        }
+            if(d.type === 'list') {
+                d.list.forEach(p => { if(p.id !== myId) { players.push(p); addBubble(p.id, "?", false); }});
+            }
+            if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){b.style.left=d.x; b.style.top=d.y;} }
+            if(d.type === 'start') { players = d.players; maxTurns = d.turns; show('scr-game'); nextTurn(); }
+            if(d.type === 'play') { receiveTurn(d.text); }
+        });
+    }
 
-        function sendTurn() {
-            let txt = document.getElementById('input-game').value;
-            if(!txt) return;
-            conn.send({type: 'turn', text: txt});
-            currentTurnIndex++;
-            document.getElementById('input-game').value = "";
-            updateTurnUI();
-        }
+    function addBubble(id, label, isMe) {
+        if(document.getElementById('bub-'+id)) return;
+        const b = document.createElement('div');
+        b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = label;
+        b.style.left = "20px"; b.style.top = "20px";
+        if(isMe) makeDraggable(b, id);
+        document.getElementById('lobby-area').appendChild(b);
+    }
 
-        function receiveTurn(txt) {
-            let corrupted = txt.split('').map(c => (charMap[c.toLowerCase()] && Math.random() > 0.4) ? charMap[c.toLowerCase()] : c).join('');
-            document.getElementById('game-word').innerText = corrupted;
-            currentTurnIndex++;
-            updateTurnUI();
-        }
+    function makeDraggable(el, id) {
+        const area = document.getElementById('lobby-area');
+        const move = (e) => {
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            const r = area.getBoundingClientRect();
+            let x = cx - r.left - 30, y = cy - r.top - 15;
+            if(x<0) x=0; if(x > r.width-60) x=r.width-60;
+            if(y<0) y=0; if(y > r.height-30) y=r.height-30;
+            el.style.left = x+"px"; el.style.top = y+"px";
+            if(conn) conn.send({type:'move', id:id, x:el.style.left, y:el.style.top});
+        };
+        el.addEventListener('mousedown', () => document.addEventListener('mousemove', move));
+        el.addEventListener('touchstart', () => document.addEventListener('touchmove', move));
+        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', move));
+        document.addEventListener('touchend', () => document.removeEventListener('touchmove', move));
+    }
 
-        function showScreen(id) {
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
+    function startGame() {
+        // Rastgele sıralama
+        players.sort(() => Math.random() - 0.5);
+        maxTurns = document.getElementById('turn-count').value;
+        const data = {type:'start', players:players, turns:maxTurns};
+        conn.send(data);
+        show('scr-game');
+        nextTurn();
+    }
 
-        function copyId() { navigator.clipboard.writeText(myId); alert("Kod kopyalandı!"); }
-    </script>
+    function nextTurn() {
+        let current = players[turnIdx % players.length];
+        document.getElementById('turn-msg').innerText = "Sıra: " + (current.id === myId ? "SENDE!" : current.nick);
+        const isMyTurn = current.id === myId;
+        document.getElementById('game-input').disabled = !isMyTurn;
+        document.getElementById('send-btn').disabled = !isMyTurn;
+        if(!isMyTurn) document.getElementById('word-display').innerText = "Bekleniyor...";
+    }
+
+    function sendTurn() {
+        const val = document.getElementById('game-input').value;
+        if(!val) return;
+        conn.send({type:'play', text:val});
+        turnIdx++;
+        document.getElementById('game-input').value = "";
+        nextTurn();
+    }
+
+    function receiveTurn(t) {
+        const corrupted = t.split('').map(c => (charMap[c.toLowerCase()] && Math.random() > 0.4) ? charMap[c.toLowerCase()] : c).join('');
+        document.getElementById('word-display').innerText = corrupted;
+        turnIdx++;
+        nextTurn();
+    }
+
+    function show(id) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+</script>
 </body>
 </html>
