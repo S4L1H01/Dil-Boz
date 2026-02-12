@@ -3,51 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DİL-BOZ | Ultra Kaos</title>
+    <title>DİL-BOZ | Ultra Kaos v3</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root { --bg: #F0F4F8; --primary: #6E7BFF; --secondary: #FF85A1; --accent: #FFD166; --text: #2D3436; --success: #00B894; }
         body { background: var(--bg); margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; transition: background 0.3s; }
         .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; background-image: radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px); background-size: 20px 20px; z-index: -1; }
-        
         .panel { background: white; width: 95%; max-width: 800px; min-height: 85vh; border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; }
         .header { padding: 15px; background: var(--primary); color: white; text-align: center; font-size: 1.6rem; font-weight: bold; border-radius: 25px 25px 5px 5px; }
         .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; overflow-y: auto; }
         .active { display: flex; }
-
-        /* LOBİ */
         #lobby-container { display: flex; width: 100%; gap: 15px; flex-wrap: wrap; }
         #lobby-area { flex: 2; height: 350px; background: #F8FAFC; border-radius: 30px; position: relative; border: 4px dashed #CBD5E1; overflow: hidden; min-width: 300px; }
         #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); max-height: 350px; overflow-y: auto; }
-        
         .player-bubble { position: absolute; padding: 12px 22px; background: var(--secondary); color: white; border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .acc { position: absolute; pointer-events: none; font-size: 30px; left: 50%; transform: translateX(-50%); z-index: 10; }
-        .hat { top: -35px; }
-        .glass { top: -10px; font-size: 22px; }
-        .mustache { bottom: -18px; }
-
+        .hat { top: -35px; } .glass { top: -10px; font-size: 22px; } .mustache { bottom: -18px; }
         .acc-option { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 10px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; width: 35px; text-align: center; }
-        .acc-option:hover { background: var(--accent); }
-
-        /* OYUN */
         #timer { font-size: 2.5rem; font-weight: bold; color: var(--secondary); }
         .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; min-height: 60px; }
         .panic { background-color: #ffcccc !important; }
-
         button { padding: 12px 25px; border-radius: 15px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin: 5px; }
-        .btn-green { background: var(--success); }
-        .btn-blue { background: var(--primary); }
-        .btn-red { background: #FF7675; }
+        .btn-green { background: var(--success); } .btn-blue { background: var(--primary); } .btn-red { background: #FF7675; }
         input, select { padding: 12px; border-radius: 15px; border: 2px solid #ddd; margin: 5px; outline: none; }
     </style>
 </head>
 <body>
 <div class="bg-pattern"></div>
 <div class="panel">
-    <div class="header" id="main-header">DİL-BOZ 🌀</div>
-
+    <div class="header">DİL-BOZ 🌀</div>
     <div id="scr-login" class="content active">
-        <input type="text" id="nick" placeholder="Adın nedir?">
+        <input type="text" id="nick" placeholder="Adın...">
         <button class="btn-green" onclick="setup('host')">Oda Kur</button>
         <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Katıl</button>
         <div id="join-box" style="display:none; margin-top:10px;">
@@ -55,24 +41,17 @@
             <button class="btn-blue" onclick="setup('join')">Giriş</button>
         </div>
     </div>
-
     <div id="scr-lobby" class="content">
         <p>Kod: <b id="my-id" style="color:var(--primary); cursor:pointer">...</b></p>
         <div id="lobby-container">
             <div id="lobby-area"></div>
             <div id="wardrobe">
-                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">ŞAPKA</p>
+                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">AKSESUARLAR</p>
                 <div class="acc-option" onclick="setAcc('hat', '🎩')">🎩</div>
                 <div class="acc-option" onclick="setAcc('hat', '👑')">👑</div>
                 <div class="acc-option" onclick="setAcc('hat', '💩')">💩</div>
-                <div class="acc-option" onclick="setAcc('hat', '🤠')">🤠</div>
-                <div class="acc-option" onclick="setAcc('hat', '🎓')">🎓</div>
-                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">GÖZLÜK</p>
                 <div class="acc-option" onclick="setAcc('gls', '🕶️')">🕶️</div>
-                <div class="acc-option" onclick="setAcc('gls', '😎')">😎</div>
                 <div class="acc-option" onclick="setAcc('gls', '🧐')">🧐</div>
-                <p style="font-size:0.7rem; font-weight:bold; margin:2px 0">BIYIK</p>
-                <div class="acc-option" onclick="setAcc('mus', '〰️')">〰️</div>
                 <div class="acc-option" onclick="setAcc('mus', '👨🏻')">👨🏻</div>
                 <div class="acc-option" onclick="setAcc('mus', '🧔')">🧔</div>
                 <div class="acc-option" onclick="setAcc('mus', '🥸')">🥸</div>
@@ -86,66 +65,83 @@
             <button class="btn-green" onclick="startGame()">BAŞLAT!</button>
         </div>
     </div>
-
     <div id="scr-game" class="content">
         <div id="timer">20</div>
         <div class="word-box" id="word-display">...</div>
         <input type="text" id="game-input" placeholder="Yaz..." disabled oninput="sendTyping()" style="width:70%">
         <button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>GÖNDER</button>
     </div>
-
     <div id="scr-final" class="content">
         <h2 id="winner-text">Oylama!</h2>
         <div id="final-results" style="width:100%"></div>
-        <button class="btn-green" onclick="backToLobby()">LOBİYE DÖN</button>
-        <button class="btn-red" onclick="location.reload()">ÇIKIŞ</button>
+        <button class="btn-green" onclick="location.reload()">LOBİYE DÖN</button>
     </div>
 </div>
 
 <script>
-    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 6, history = [], votes = {}, myVoteIdx = -1;
-    let timerInterval, myAcc = {hat:'', gls:'', mus:''};
+    let peer, connections = [], myId, myNick, players = [], turnIdx = 0, maxTurns = 6, history = [], votes = {}, myVoteIdx = -1;
+    let timerInterval, myAcc = {hat:'', gls:'', mus:''}, isHost = false;
     const audioTick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
     function setup(mode) {
+        isHost = mode === 'host';
         myNick = document.getElementById('nick').value || "İsimsiz";
         const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
-        peer = new Peer(mode === 'host' ? shortId : undefined);
+        peer = new Peer(isHost ? shortId : undefined);
         
         peer.on('open', id => {
             myId = id; document.getElementById('my-id').innerText = id;
             show('scr-lobby'); addBubble(id, myNick, true);
-            players.push({id, nick: myNick, acc: myAcc});
-            if(mode === 'host') document.getElementById('host-settings').style.display='block';
-            else {
-                conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
-                handleConn();
+            players = [{id, nick: myNick, acc: myAcc}];
+            if(isHost) {
+                document.getElementById('host-settings').style.display='block';
+                peer.on('connection', conn => {
+                    connections.push(conn);
+                    handleData(conn);
+                });
+            } else {
+                const conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
+                connections = [conn];
+                handleData(conn);
             }
         });
-        peer.on('connection', c => { conn = c; handleConn(); });
     }
 
-    function handleConn() {
+    function broadcast(data) {
+        connections.forEach(c => c.send(data));
+    }
+
+    function handleData(conn) {
+        conn.on('open', () => { if(!isHost) conn.send({type:'join', nick:myNick, id:myId, acc:myAcc}); });
         conn.on('data', d => {
-            if(d.type === 'join') { 
-                if(!players.find(p=>p.id===d.id)) players.push({id:d.id, nick:d.nick, acc:d.acc});
-                addBubble(d.id, d.nick, false, d.acc);
-                if(players.length > 1) conn.send({type:'list', list:players});
+            if(isHost) broadcast(d); // Host her şeyi herkese dağıtır (Relay)
+
+            if(d.type === 'join') {
+                if(!players.find(p=>p.id===d.id)) {
+                    players.push({id:d.id, nick:d.nick, acc:d.acc});
+                    addBubble(d.id, d.nick, false, d.acc);
+                }
+                if(isHost) broadcast({type:'list', list:players});
             }
-            if(d.type === 'list') { 
-                d.list.forEach(p => { 
-                    if(!players.find(x=>x.id===p.id)) players.push(p); 
+            if(d.type === 'list') {
+                d.list.forEach(p => {
+                    if(!players.find(x=>x.id===p.id)) players.push(p);
                     addBubble(p.id, p.nick, p.id===myId, p.acc);
                 });
             }
             if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){ b.style.left=d.x; b.style.top=d.y; }}
             if(d.type === 'acc_update') { updateBubbleAcc(d.id, d.acc); }
-            if(d.type === 'start') { players = d.players; maxTurns = d.maxTurns; resetGameState(); show('scr-game'); startTurnLogic(); }
-            if(d.type === 'play') { history.push({nick: d.nick, text: d.text}); receiveTurn(d.text); }
-            if(d.type === 'finish') { history = d.history; showResults(); }
+            if(d.type === 'start') { players = d.players; maxTurns = d.maxTurns; history = []; turnIdx = 0; show('scr-game'); startTurnLogic(); }
+            if(d.type === 'play') { 
+                history.push({nick: d.nick, text: d.text}); 
+                turnIdx++; 
+                receiveTurn(d.text); 
+            }
+            if(d.type === 'typing') { 
+                let current = players[turnIdx % players.length];
+                if(myId !== current.id) document.getElementById('word-display').innerText = d.nick + " yazıyor..."; 
+            }
             if(d.type === 'vote_sync') { votes = d.votes; updateVoteDisplay(); }
-            if(d.type === 'back_to_lobby') { show('scr-lobby'); }
-            if(d.type === 'typing') { if(myId !== players[turnIdx % players.length].id) document.getElementById('word-display').innerText = d.nick + " yazıyor..."; }
         });
     }
 
@@ -154,17 +150,8 @@
         const b = document.createElement('div');
         b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = nick;
         b.innerHTML += `<div class="acc hat">${acc.hat||''}</div><div class="acc glass">${acc.gls||''}</div><div class="acc mustache">${acc.mus||''}</div>`;
-        b.style.left = "20px"; b.style.top = "20px";
         if(isMe) makeDraggable(b, id);
         document.getElementById('lobby-area').appendChild(b);
-    }
-
-    function setAcc(type, val) {
-        if(type === 'hat') myAcc.hat = val; 
-        else if(type === 'gls') myAcc.gls = val;
-        else myAcc.mus = val;
-        updateBubbleAcc(myId, myAcc);
-        if(conn) conn.send({type: 'acc_update', id: myId, acc: myAcc});
     }
 
     function updateBubbleAcc(id, acc) {
@@ -187,24 +174,32 @@
             if(x < 0) x = 0; if(x > r.width - el.offsetWidth) x = r.width - el.offsetWidth;
             if(y < 0) y = 0; if(y > r.height - el.offsetHeight) y = r.height - el.offsetHeight;
             el.style.left = x+"px"; el.style.top = y+"px";
-            if(conn) conn.send({type:'move', id:id, x:el.style.left, y:el.style.top});
+            broadcast({type:'move', id:id, x:el.style.left, y:el.style.top});
         };
         el.onmousedown = () => document.onmousemove = move;
         el.ontouchstart = () => document.ontouchmove = move;
         document.onmouseup = document.ontouchend = () => { document.onmousemove = null; document.ontouchmove = null; };
     }
 
+    function setAcc(type, val) {
+        if(type === 'hat') myAcc.hat = val; else if(type === 'gls') myAcc.gls = val; else myAcc.mus = val;
+        updateBubbleAcc(myId, myAcc);
+        broadcast({type: 'acc_update', id: myId, acc: myAcc});
+    }
+
     function startTurnLogic() {
-        if(turnIdx >= maxTurns) { if(conn && myId === players[0].id) conn.send({type:'finish', history: history}); showResults(); return; }
+        if(turnIdx >= maxTurns) { showResults(); return; }
         let current = players[turnIdx % players.length];
         const isMyTurn = current.id === myId;
         document.getElementById('game-input').disabled = !isMyTurn;
         document.getElementById('send-btn').disabled = !isMyTurn;
-        if(isMyTurn) { 
-            startTimer(); document.getElementById('game-input').focus(); 
-            if(turnIdx === 0) document.getElementById('word-display').innerText = "İlk cümleyi yaz!";
-        } else { 
-            clearInterval(timerInterval); 
+        
+        if(isMyTurn) {
+            startTimer();
+            document.getElementById('game-input').focus();
+            if(turnIdx === 0) document.getElementById('word-display').innerText = "İlk cümleyi sen yaz!";
+        } else {
+            clearInterval(timerInterval);
             document.getElementById('word-display').innerText = current.nick + " bekleniyor...";
         }
     }
@@ -220,28 +215,22 @@
     }
 
     function sendTurn() {
-        const val = document.getElementById('game-input').value || "Kaosu başlattı!";
-        history.push({nick: myNick, text: val});
-        if(conn) conn.send({type:'play', text:val, nick: myNick});
-        document.getElementById('game-input').value = ""; document.body.classList.remove('panic');
-        turnIdx++; startTurnLogic();
+        const val = document.getElementById('game-input').value || "Kaos!";
+        broadcast({type:'play', text:val, nick: myNick});
+        document.getElementById('game-input').value = "";
+        document.body.classList.remove('panic');
     }
 
     function receiveTurn(t) {
         let words = t.split(' ').map(w => {
-            if(Math.random() < 0.25) return '🌀';
-            return w.split('').map(c => (Math.random() < 0.35) ? '*' : c).join('');
+            if(Math.random() < 0.2) return '🌀';
+            return w.split('').map(c => (Math.random() < 0.3) ? '*' : c).join('');
         }).join(' ');
         document.getElementById('word-display').innerText = words;
-        turnIdx++; startTurnLogic();
+        startTurnLogic();
     }
 
-    function castVote(idx) {
-        if(myVoteIdx === idx) { votes[idx]--; myVoteIdx = -1; }
-        else { if(myVoteIdx !== -1) votes[myVoteIdx]--; votes[idx] = (votes[idx] || 0) + 1; myVoteIdx = idx; }
-        if(conn) conn.send({type:'vote_sync', votes: votes});
-        updateVoteDisplay();
-    }
+    function showResults() { show('scr-final'); updateVoteDisplay(); }
 
     function updateVoteDisplay() {
         const resDiv = document.getElementById('final-results');
@@ -253,16 +242,20 @@
         if(maxV > 0) document.getElementById('winner-text').innerText = "🏆 KRAL: " + winner;
     }
 
-    function startGame() {
-        maxTurns = parseInt(document.getElementById('turn-select').value);
-        players.sort(() => Math.random() - 0.5);
-        conn.send({type:'start', players:players, maxTurns: maxTurns});
-        resetGameState(); show('scr-game'); startTurnLogic();
+    function castVote(idx) {
+        if(myVoteIdx === idx) { votes[idx]--; myVoteIdx = -1; }
+        else { if(myVoteIdx !== -1) votes[myVoteIdx]--; votes[idx] = (votes[idx] || 0) + 1; myVoteIdx = idx; }
+        broadcast({type:'vote_sync', votes: votes});
+        updateVoteDisplay();
     }
 
-    function resetGameState() { turnIdx = 0; history = []; votes = {}; myVoteIdx = -1; document.body.classList.remove('panic'); }
-    function backToLobby() { if(conn) conn.send({type:'back_to_lobby'}); show('scr-lobby'); }
-    function sendTyping() { if(conn) conn.send({type:'typing', nick:myNick}); }
+    function startGame() {
+        const mt = parseInt(document.getElementById('turn-select').value);
+        const shuffled = [...players].sort(() => Math.random() - 0.5);
+        broadcast({type:'start', players:shuffled, maxTurns: mt});
+    }
+
+    function sendTyping() { broadcast({type:'typing', nick:myNick}); }
     function show(id) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 </script>
 </body>
