@@ -3,76 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dil-Boz | Sade Kaos</title>
+    <title>Dil-Boz | Pastel Kaos</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        body { background: #121212; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .panel { background: #1e1e1e; width: 90%; max-width: 600px; height: 80vh; border-radius: 16px; display: flex; flex-direction: column; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .header { padding: 20px; font-size: 1.5rem; font-weight: 600; text-align: center; border-bottom: 1px solid #333; letter-spacing: 1px; }
-        .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        /* PASTEL BOYAL ARKA PLAN */
+        body { 
+            background: #87CEEB; /* Gökyüzü */
+            margin: 0; overflow: hidden; font-family: 'Comic Sans MS', cursive;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+        .landscape { position: fixed; bottom: 0; width: 100%; height: 300px; z-index: -1; }
+        .grass { background: #7CFC00; height: 100px; position: absolute; bottom: 0; width: 100%; border-top: 5px solid #64cc00; }
+        .house { position: absolute; bottom: 80px; left: 10%; width: 120px; height: 100px; background: #FFD700; border: 3px solid #333; }
+        .roof { position: absolute; bottom: 180px; left: 9%; border-left: 70px solid transparent; border-right: 70px solid transparent; border-bottom: 60px solid #FF4500; }
+        .tree { position: absolute; bottom: 80px; right: 15%; width: 20px; height: 100px; background: #8B4513; }
+        .leaves { position: absolute; bottom: 160px; right: 12%; width: 80px; height: 80px; background: #228B22; border-radius: 50%; box-shadow: 20px -10px #228B22, -20px -10px #228B22; }
+
+        .panel { background: rgba(255, 255, 255, 0.9); width: 90%; max-width: 500px; min-height: 70vh; border-radius: 25px; border: 8px solid #FF69B4; display: flex; flex-direction: column; box-shadow: 10px 10px 0px rgba(0,0,0,0.1); }
+        .header { padding: 15px; background: #FF69B4; color: white; text-align: center; font-size: 1.8rem; }
+        .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .active { display: flex; }
         
-        #lobby-area { width: 100%; height: 250px; background: #161616; border-radius: 12px; position: relative; margin: 15px 0; overflow: hidden; border: 1px solid #222; }
-        .player-bubble { position: absolute; padding: 10px 20px; background: #37474f; border-radius: 30px; cursor: pointer; font-weight: 500; font-size: 0.9rem; touch-action: none; border: 1px solid #546e7a; }
+        #lobby-area { width: 100%; height: 200px; background: rgba(255,255,255,0.5); border-radius: 15px; position: relative; margin: 10px 0; border: 3px dashed #FF69B4; overflow: hidden; }
+        .player-bubble { position: absolute; padding: 8px 15px; background: #00BFFF; color: white; border-radius: 20px; cursor: move; font-weight: bold; border: 2px solid white; touch-action: none; }
 
-        input, select { background: #2c2c2c; color: white; border: 1px solid #444; padding: 14px; border-radius: 8px; width: 80%; font-size: 1rem; margin-bottom: 10px; outline: none; }
-        button { background: #f5f5f5; color: #121212; border: none; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.2s; margin: 5px; }
-        button:hover { background: #ffffff; transform: translateY(-2px); }
-        button:disabled { background: #333; color: #777; cursor: not-allowed; transform: none; }
+        input { padding: 15px; border-radius: 12px; border: 3px solid #00BFFF; width: 80%; margin-bottom: 10px; font-size: 1rem; }
+        button { padding: 12px 25px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; color: white; margin: 5px; font-size: 1rem; }
+        .btn-green { background: #32CD32; }
+        .btn-blue { background: #1E90FF; }
+        .btn-red { background: #FF4500; }
 
-        .word-box { background: #252525; padding: 25px; border-radius: 12px; font-size: 1.8rem; color: #81d4fa; font-weight: bold; margin: 15px 0; text-align: center; width: 90%; border: 1px solid #333; }
-        .code-display { font-family: monospace; color: #81c784; font-size: 1.2rem; background: #161616; padding: 5px 15px; border-radius: 4px; }
+        .word-box { background: #FFF; padding: 20px; border-radius: 15px; font-size: 1.5rem; color: #333; border: 4px solid #1E90FF; width: 85%; text-align: center; }
+        .results { text-align: left; width: 100%; overflow-y: auto; max-height: 300px; }
+        .res-item { background: #eee; margin: 5px 0; padding: 10px; border-radius: 8px; border-left: 5px solid #FF69B4; }
     </style>
 </head>
 <body>
 
+<div class="landscape">
+    <div class="grass"></div>
+    <div class="roof"></div>
+    <div class="house"></div>
+    <div class="tree"></div>
+    <div class="leaves"></div>
+</div>
+
 <div class="panel">
-    <div class="header">DİL-BOZ</div>
+    <div class="header">DİL-BOZ 🌀</div>
 
     <div id="scr-login" class="content active">
-        <input type="text" id="nick" placeholder="İsim">
-        <button onclick="setup('host')">Lobi Kur</button>
-        <button onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
-        <div id="join-box" style="display:none; width:100%; text-align:center;">
-            <input type="text" id="room-id" placeholder="6 Haneli Kod">
-            <button onclick="setup('join')">Giriş Yap</button>
+        <input type="text" id="nick" placeholder="İsmin nedir?">
+        <button class="btn-green" onclick="setup('host')">Lobi Kur</button>
+        <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
+        <div id="join-box" style="display:none;">
+            <input type="text" id="room-id" placeholder="Kod">
+            <button class="btn-blue" onclick="setup('join')">Giriş</button>
         </div>
     </div>
 
     <div id="scr-lobby" class="content">
-        <p>Oda Kodu: <span class="code-display" id="my-id">...</span></p>
-        <select id="turn-count">
-            <option value="5">5 Tur</option>
-            <option value="10" selected>10 Tur</option>
-            <option value="20">20 Tur</option>
-        </select>
+        <p>Oda Kodu: <b id="my-id" style="color:#FF4500">...</b></p>
         <div id="lobby-area"></div>
-        <button id="start-btn" onclick="startGame()" style="display:none">Oyunu Başlat</button>
+        <button id="start-btn" class="btn-green" style="display:none" onclick="startGame()">OYUNU BAŞLAT!</button>
     </div>
 
     <div id="scr-game" class="content">
-        <h4 id="turn-msg">Hazırlan...</h4>
+        <h3 id="turn-msg" style="color:#FF4500">Hazırlan...</h3>
         <div class="word-box" id="word-display">...</div>
-        <input type="text" id="game-input" placeholder="Yazınız..." disabled>
-        <button id="send-btn" onclick="sendTurn()" disabled>Gönder</button>
+        <input type="text" id="game-input" placeholder="Anladığını buraya yaz..." disabled>
+        <button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>GÖNDER</button>
+    </div>
+
+    <div id="scr-final" class="content">
+        <h2>Oyun Bitti! 🎨</h2>
+        <div class="results" id="final-results"></div>
+        <button class="btn-red" onclick="location.reload()">Tekrar Oyna</button>
     </div>
 </div>
 
 <script>
-    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 10;
+    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 5, history = [];
+    const symbols = ['$', '#', '/', '!', '?', '@', '*', '%'];
+    const foreign = ['Morning', 'Schule', 'Chat', 'Water', 'Livre', 'Friend'];
     const charMap = {'a':'α','e':'€','u':'μ','ü':'ϋ','s':'§','ş':'∫','o':'0','ö':'θ','i':'ı'};
 
     function setup(mode) {
         myNick = document.getElementById('nick').value || "Anonim";
-        // 6 haneli kısa kod üretimi
         const shortId = Math.random().toString(36).substring(2, 8).toUpperCase();
         peer = new Peer(mode === 'host' ? shortId : undefined);
-        
         peer.on('open', id => {
-            myId = id;
-            document.getElementById('my-id').innerText = id;
-            show('scr-lobby');
-            addBubble(id, "?", true); 
+            myId = id; document.getElementById('my-id').innerText = id;
+            show('scr-lobby'); addBubble(id, myNick, true);
             players.push({id: id, nick: myNick});
             if(mode === 'join') {
                 conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
@@ -85,24 +106,19 @@
     function handleConn() {
         conn.on('open', () => conn.send({type:'join', nick:myNick, id:myId}));
         conn.on('data', d => {
-            if(d.type === 'join') {
-                players.push({id:d.id, nick:d.nick});
-                addBubble(d.id, "?", false);
-                if(players.length > 1) conn.send({type:'list', list:players});
-            }
-            if(d.type === 'list') {
-                d.list.forEach(p => { if(p.id !== myId) { players.push(p); addBubble(p.id, "?", false); }});
-            }
+            if(d.type === 'join') { players.push({id:d.id, nick:d.nick}); addBubble(d.id, d.nick, false); if(players.length > 1) conn.send({type:'list', list:players}); }
+            if(d.type === 'list') { d.list.forEach(p => { if(!players.find(x=>x.id==p.id)) { players.push(p); addBubble(p.id, p.nick, false); }}); }
             if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){b.style.left=d.x; b.style.top=d.y;} }
-            if(d.type === 'start') { players = d.players; maxTurns = d.turns; show('scr-game'); nextTurn(); }
-            if(d.type === 'play') { receiveTurn(d.text); }
+            if(d.type === 'start') { players = d.players; show('scr-game'); nextTurn(); }
+            if(d.type === 'play') { history.push({nick: d.nick, text: d.text}); receiveTurn(d.text); }
+            if(d.type === 'finish') { history = d.history; showResults(); }
         });
     }
 
-    function addBubble(id, label, isMe) {
+    function addBubble(id, nick, isMe) {
         if(document.getElementById('bub-'+id)) return;
         const b = document.createElement('div');
-        b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = label;
+        b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = nick;
         b.style.left = "20px"; b.style.top = "20px";
         if(isMe) makeDraggable(b, id);
         document.getElementById('lobby-area').appendChild(b);
@@ -115,8 +131,8 @@
             const cy = e.touches ? e.touches[0].clientY : e.clientY;
             const r = area.getBoundingClientRect();
             let x = cx - r.left - 30, y = cy - r.top - 15;
-            if(x<0) x=0; if(x > r.width-60) x=r.width-60;
-            if(y<0) y=0; if(y > r.height-30) y=r.height-30;
+            if(x<0) x=0; if(x > r.width-70) x=r.width-70;
+            if(y<0) y=0; if(y > r.height-40) y=r.height-40;
             el.style.left = x+"px"; el.style.top = y+"px";
             if(conn) conn.send({type:'move', id:id, x:el.style.left, y:el.style.top});
         };
@@ -127,38 +143,51 @@
     }
 
     function startGame() {
-        // Rastgele sıralama
         players.sort(() => Math.random() - 0.5);
-        maxTurns = document.getElementById('turn-count').value;
-        const data = {type:'start', players:players, turns:maxTurns};
-        conn.send(data);
-        show('scr-game');
-        nextTurn();
+        conn.send({type:'start', players:players});
+        show('scr-game'); nextTurn();
     }
 
     function nextTurn() {
+        if(turnIdx >= maxTurns) {
+            if(conn) conn.send({type:'finish', history: history});
+            showResults(); return;
+        }
         let current = players[turnIdx % players.length];
-        document.getElementById('turn-msg').innerText = "Sıra: " + (current.id === myId ? "SENDE!" : current.nick);
-        const isMyTurn = current.id === myId;
-        document.getElementById('game-input').disabled = !isMyTurn;
-        document.getElementById('send-btn').disabled = !isMyTurn;
-        if(!isMyTurn) document.getElementById('word-display').innerText = "Bekleniyor...";
+        document.getElementById('turn-msg').innerText = (current.id === myId ? "SIRA SENDE!" : "BEKLE...");
+        document.getElementById('game-input').disabled = current.id !== myId;
+        document.getElementById('send-btn').disabled = current.id !== myId;
+        if(current.id !== myId) document.getElementById('word-display').innerText = "Arkadaşın yazıyor...";
     }
 
     function sendTurn() {
         const val = document.getElementById('game-input').value;
         if(!val) return;
-        conn.send({type:'play', text:val});
-        turnIdx++;
+        history.push({nick: myNick, text: val});
+        conn.send({type:'play', text:val, nick: myNick});
         document.getElementById('game-input').value = "";
-        nextTurn();
+        turnIdx++; nextTurn();
     }
 
     function receiveTurn(t) {
-        const corrupted = t.split('').map(c => (charMap[c.toLowerCase()] && Math.random() > 0.4) ? charMap[c.toLowerCase()] : c).join('');
+        let words = t.split(' ');
+        let corrupted = words.map(w => {
+            if(Math.random() > 0.7) return foreign[Math.floor(Math.random()*foreign.length)];
+            let chars = w.split('').map(c => {
+                if(charMap[c.toLowerCase()] && Math.random() > 0.4) return charMap[c.toLowerCase()];
+                if(Math.random() > 0.8) return symbols[Math.floor(Math.random()*symbols.length)];
+                return c;
+            });
+            return chars.join('');
+        }).join(' ');
         document.getElementById('word-display').innerText = corrupted;
-        turnIdx++;
-        nextTurn();
+        turnIdx++; nextTurn();
+    }
+
+    function showResults() {
+        show('scr-final');
+        const resDiv = document.getElementById('final-results');
+        resDiv.innerHTML = history.map((h, i) => `<div class="res-item"><b>${i+1}. ${h.nick}:</b> ${h.text}</div>`).join('');
     }
 
     function show(id) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
