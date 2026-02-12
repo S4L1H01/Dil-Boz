@@ -3,206 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DİL-BOZ | Kaos Başlasın!</title>
+    <title>DİL-BOZ | Kaos ve Tarz</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
-            --bg: #F0F4F8;
-            --primary: #6E7BFF;
-            --secondary: #FF85A1;
-            --accent: #FFD166;
-            --text: #2D3436;
+            --bg: #F0F4F8; --primary: #6E7BFF; --secondary: #FF85A1;
+            --accent: #FFD166; --text: #2D3436; --success: #00B894;
         }
-
         body { 
-            background: var(--bg);
-            margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg); margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif;
             display: flex; justify-content: center; align-items: center; height: 100vh;
-            color: var(--text);
+            transition: background-color 0.5s ease;
         }
-
-        /* GARTIC TARZI ARKA PLAN */
-        .bg-pattern {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #e5e5f7;
-            opacity: 0.4;
-            background-image:  radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px);
-            background-size: 20px 20px;
-            background-position: 0 0,10px 10px;
-            z-index: -1;
-        }
-
-        .panel { 
-            background: white; width: 95%; max-width: 600px; min-height: 80vh; 
-            border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative;
-        }
-
-        .header { 
-            padding: 20px; background: var(--primary); color: white; 
-            text-align: center; font-size: 2rem; font-weight: bold;
-            border-radius: 25px 25px 5px 5px; letter-spacing: 2px;
-        }
-
-        .content { flex: 1; padding: 25px; display: none; flex-direction: column; align-items: center; justify-content: flex-start; }
+        .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #e5e5f7; opacity: 0.3; background-image: radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px); background-size: 20px 20px; z-index: -1; }
+        
+        .panel { background: white; width: 95%; max-width: 700px; min-height: 85vh; border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; }
+        .header { padding: 15px; background: var(--primary); color: white; text-align: center; font-size: 1.6rem; font-weight: bold; border-radius: 25px 25px 5px 5px; }
+        .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; overflow-y: auto; }
         .active { display: flex; }
+
+        /* LOBİ VE AKSESUARLAR */
+        #lobby-container { display: flex; width: 100%; gap: 10px; flex-wrap: wrap; }
+        #lobby-area { flex: 2; height: 300px; background: #F8FAFC; border-radius: 30px; position: relative; border: 4px dashed #CBD5E1; overflow: hidden; min-width: 300px; }
+        #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); min-width: 150px; }
         
-        /* LOBİ ALANI */
-        #lobby-area { 
-            width: 100%; height: 300px; background: #F8FAFC; border-radius: 30px; 
-            position: relative; margin: 20px 0; border: 4px dashed #CBD5E1; overflow: hidden; 
-        }
+        .player-bubble { position: absolute; padding: 10px 18px; background: var(--secondary); color: white; border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; white-space: nowrap; transition: background 0.3s; }
+        .acc { position: absolute; pointer-events: none; font-size: 24px; left: 50%; transform: translateX(-50%); }
+        .hat { top: -25px; }
+        .mustache { bottom: -15px; }
 
-        .player-bubble { 
-            position: absolute; padding: 12px 20px; background: var(--secondary); color: white; 
-            border-radius: 50px; cursor: grab; font-weight: bold; border: 3px solid white; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.2s;
-            user-select: none; touch-action: none;
-        }
+        .acc-option { font-size: 24px; cursor: pointer; padding: 5px; border-radius: 10px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; }
+        .acc-option:hover { background: var(--accent); }
 
-        /* INPUT & BUTTONS */
-        input { 
-            padding: 15px; border-radius: 20px; border: 3px solid #E2E8F0; 
-            width: 80%; margin-bottom: 15px; font-size: 1.1rem; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary); }
+        /* OYUN */
+        #timer { font-size: 2.5rem; font-weight: bold; color: var(--secondary); }
+        .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; }
+        .panic { background-color: #ffeaea !important; }
 
-        button { 
-            padding: 15px 35px; border-radius: 20px; border: none; cursor: pointer; 
-            font-weight: bold; color: white; font-size: 1.1rem; transition: 0.3s;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-        }
-        button:active { transform: translateY(3px); box-shadow: none; }
-        
-        .btn-green { background: #00B894; }
-        .btn-blue { background: var(--primary); }
+        /* BUTONLAR */
+        button { padding: 12px 25px; border-radius: 15px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin: 5px; }
+        .btn-green { background: var(--success); }
         .btn-red { background: #FF7675; }
-
-        /* GAMEPLAY */
-        #timer { font-size: 2rem; font-weight: bold; color: var(--secondary); margin-bottom: 10px; }
-        .word-box { 
-            background: #F1F2F6; padding: 30px; border-radius: 25px; 
-            font-size: 1.4rem; color: #2D3436; border: 4px solid var(--accent); 
-            width: 85%; text-align: center; margin-bottom: 20px; min-height: 60px;
-        }
-
-        /* OYLAMA SİSTEMİ */
-        .res-item { 
-            background: white; margin: 10px 0; padding: 15px; border-radius: 20px; 
-            border: 3px solid #F1F2F6; width: 90%; display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: 0.3s;
-        }
-        .res-item:hover { border-color: var(--secondary); transform: scale(1.02); }
-        .vote-count { background: var(--accent); padding: 5px 12px; border-radius: 10px; font-weight: bold; }
+        .btn-blue { background: var(--primary); }
     </style>
 </head>
 <body>
-
 <div class="bg-pattern"></div>
-
 <div class="panel">
-    <div class="header" id="game-header">DİL-BOZ 🌀</div>
+    <div class="header">DİL-BOZ 🌀</div>
 
     <div id="scr-login" class="content active">
-        <input type="text" id="nick" placeholder="Takma Adın...">
+        <input type="text" id="nick" placeholder="İsmin..." style="padding:15px; border-radius:15px; border:2px solid #ddd; width:70%">
         <button class="btn-green" onclick="setup('host')">Oda Kur</button>
-        <button class="btn-blue" style="margin-top:10px" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
-        <div id="join-box" style="display:none; width:100%; text-align:center; margin-top:20px;">
-            <input type="text" id="room-id" placeholder="Kod Buraya...">
-            <button class="btn-blue" onclick="setup('join')">Giriş Yap</button>
+        <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
+        <div id="join-box" style="display:none; margin-top:10px;">
+            <input type="text" id="room-id" placeholder="Kod">
+            <button class="btn-blue" onclick="setup('join')">Giriş</button>
         </div>
     </div>
 
     <div id="scr-lobby" class="content">
-        <p style="margin:0">Oda Kodu (Tıkla Kopyala):</p>
-        <h2 id="my-id" style="color:var(--primary); cursor:pointer; margin: 10px 0;">...</h2>
-        <div id="lobby-area"></div>
-        <button id="start-btn" class="btn-green" style="display:none" onclick="startGame()">OYUNU BAŞLAT!</button>
+        <p>Kod: <b id="my-id" style="color:var(--primary); cursor:pointer">...</b></p>
+        <div id="lobby-container">
+            <div id="lobby-area"></div>
+            <div id="wardrobe">
+                <p style="font-size:0.8rem; font-weight:bold; margin:5px 0">ŞAPKALAR</p>
+                <div class="acc-option" onclick="setAcc('hat', '🎩')">🎩</div>
+                <div class="acc-option" onclick="setAcc('hat', '👑')">👑</div>
+                <div class="acc-option" onclick="setAcc('hat', '🎓')">🎓</div>
+                <div class="acc-option" onclick="setAcc('hat', '🤠')">🤠</div>
+                <div class="acc-option" onclick="setAcc('hat', '🎅')">🎅</div>
+                <p style="font-size:0.8rem; font-weight:bold; margin:5px 0">BIYIKLAR</p>
+                <div class="acc-option" onclick="setAcc('mus', '👨🏻‍')">👨🏻‍</div>
+                <div class="acc-option" onclick="setAcc('mus', '🥸')">🥸</div>
+                <div class="acc-option" onclick="setAcc('mus', '〰️')">〰️</div>
+                <div class="acc-option" onclick="setAcc('mus', '🧔')">🧔</div>
+                <div class="acc-option" onclick="setAcc('mus', '🐈')">🐈</div>
+            </div>
+        </div>
+        <div id="host-settings" style="display:none">
+            <select id="turn-select" style="padding:10px; border-radius:10px">
+                <option value="2">2 Tur</option><option value="4">4 Tur</option><option value="6" selected>6 Tur</option>
+            </select>
+            <button class="btn-green" onclick="startGame()">BAŞLAT!</button>
+        </div>
     </div>
 
     <div id="scr-game" class="content">
         <div id="timer">20</div>
-        <h3 id="turn-msg">Sıra Bekleniyor...</h3>
         <div class="word-box" id="word-display">...</div>
-        <input type="text" id="game-input" placeholder="Gördüğünü yorumla..." disabled oninput="sendTyping()">
+        <input type="text" id="game-input" placeholder="Anladığını yaz..." disabled oninput="sendTyping()" style="width:80%; padding:15px; border-radius:15px; border:2px solid #ddd;">
         <button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>GÖNDER</button>
     </div>
 
     <div id="scr-final" class="content">
-        <h2>Hangi Cümle Daha Saçma? 🎨</h2>
-        <p>En komiğine oy ver!</p>
-        <div id="final-results" style="width: 100%; display: flex; flex-direction: column; align-items: center;"></div>
-        <button class="btn-red" style="margin-top:20px" onclick="location.reload()">Yeni Oyun</button>
+        <h2 id="winner-text">Oylama!</h2>
+        <div id="final-results" style="width: 100%"></div>
+        <button class="btn-green" onclick="backToLobby()">LOBİYE DÖN</button>
+        <button class="btn-red" onclick="location.reload()">ÇIKIŞ</button>
     </div>
 </div>
 
 <script>
-    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 5, history = [], votes = {};
-    let timerInterval;
-    const foreign = ['Table', 'Zimmer', 'Bonjour', 'Karpuz', 'Space', 'Mesa', 'Baklava', 'Computer'];
-    const charMap = {'a':'4','e':'3','i':'1','o':'0','s':'5','ş':'∫','u':'μ','ü':'ϋ','ö':'θ'};
+    let peer, conn, myId, myNick, players = [], turnIdx = 0, maxTurns = 6, history = [], votes = {}, myVoteIdx = -1;
+    let timerInterval, myAcc = {hat: '', mus: ''};
+    const audioPop = new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3');
+    const audioTick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
-    // SETUP & P2P
     function setup(mode) {
-        myNick = document.getElementById('nick').value || "Oyuncu" + Math.floor(Math.random()*100);
+        myNick = document.getElementById('nick').value || "Anonim";
         const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
         peer = new Peer(mode === 'host' ? shortId : undefined);
-
         peer.on('open', id => {
-            myId = id; 
-            document.getElementById('my-id').innerText = id;
-            document.getElementById('my-id').onclick = () => {
-                navigator.clipboard.writeText(id);
-                alert("Kod kopyalandı!");
-            };
-            show('scr-lobby'); 
-            addBubble(id, myNick, true);
-            players.push({id: id, nick: myNick});
+            myId = id; document.getElementById('my-id').innerText = id;
+            show('scr-lobby'); addBubble(id, myNick, true);
+            players.push({id: id, nick: myNick, acc: myAcc});
+            if(mode === 'host') document.getElementById('host-settings').style.display='block';
             if(mode === 'join') {
-                const target = document.getElementById('room-id').value.toUpperCase();
-                conn = peer.connect(target);
+                conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
                 handleConn();
             }
         });
-
-        peer.on('connection', c => { 
-            conn = c; 
-            handleConn(); 
-            document.getElementById('start-btn').style.display='block'; 
-        });
+        peer.on('connection', c => { conn = c; handleConn(); });
     }
 
     function handleConn() {
-        conn.on('open', () => conn.send({type:'join', nick:myNick, id:myId}));
         conn.on('data', d => {
-            if(d.type === 'join') { 
-                players.push({id:d.id, nick:d.nick}); 
-                addBubble(d.id, d.nick, false);
-                if(players.length > 1) conn.send({type:'list', list:players});
-            }
-            if(d.type === 'list') { 
-                d.list.forEach(p => { if(!players.find(x=>x.id==p.id)) { players.push(p); addBubble(p.id, p.nick, false); }}); 
-            }
-            if(d.type === 'move') { 
-                let b = document.getElementById('bub-'+d.id); 
-                if(b){ b.style.left=d.x; b.style.top=d.y; } 
-            }
-            if(d.type === 'start') { players = d.players; show('scr-game'); startTurnLogic(); }
+            if(d.type === 'join') { players.push({id:d.id, nick:d.nick, acc: d.acc}); addBubble(d.id, d.nick, false, d.acc); if(players.length > 1) conn.send({type:'list', list:players}); }
+            if(d.type === 'list') { d.list.forEach(p => { if(!players.find(x=>x.id==p.id)) { players.push(p); addBubble(p.id, p.nick, false, p.acc); }}); }
+            if(d.type === 'move') { let b = document.getElementById('bub-'+d.id); if(b){ b.style.left=d.x; b.style.top=d.y; }}
+            if(d.type === 'acc_update') { updateBubbleAcc(d.id, d.acc); }
+            if(d.type === 'start') { players = d.players; maxTurns = d.maxTurns; resetGameState(); show('scr-game'); startTurnLogic(); }
             if(d.type === 'play') { history.push({nick: d.nick, text: d.text}); receiveTurn(d.text); }
-            if(d.type === 'typing') { document.getElementById('word-display').innerText = d.nick + " yazıyor..."; }
             if(d.type === 'finish') { history = d.history; showResults(); }
-            if(d.type === 'vote') { votes[d.idx] = (votes[d.idx] || 0) + 1; updateVoteDisplay(); }
+            if(d.type === 'vote_sync') { votes = d.votes; updateVoteDisplay(); }
+            if(d.type === 'back_to_lobby') { show('scr-lobby'); }
         });
     }
 
-    // LOBİ BALONCUKLARI
-    function addBubble(id, nick, isMe) {
+    function addBubble(id, nick, isMe, acc = {hat: '', mus: ''}) {
         if(document.getElementById('bub-'+id)) return;
         const b = document.createElement('div');
         b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = nick;
-        b.style.left = Math.random()*150 + "px"; b.style.top = Math.random()*150 + "px";
+        b.innerHTML += `<div class="acc hat">${acc.hat}</div><div class="acc mustache">${acc.mus}</div>`;
+        b.style.left = "50px"; b.style.top = "50px";
         if(isMe) makeDraggable(b, id);
         document.getElementById('lobby-area').appendChild(b);
+    }
+
+    function setAcc(type, val) {
+        if(type === 'hat') myAcc.hat = val; else myAcc.mus = val;
+        updateBubbleAcc(myId, myAcc);
+        if(conn) conn.send({type: 'acc_update', id: myId, acc: myAcc});
+    }
+
+    function updateBubbleAcc(id, acc) {
+        const b = document.getElementById('bub-'+id);
+        if(b) {
+            b.querySelector('.hat').innerText = acc.hat;
+            b.querySelector('.mustache').innerText = acc.mus;
+            let p = players.find(x => x.id === id); if(p) p.acc = acc;
+        }
     }
 
     function makeDraggable(el, id) {
@@ -212,103 +173,79 @@
             const cy = e.touches ? e.touches[0].clientY : e.clientY;
             const r = area.getBoundingClientRect();
             let x = cx - r.left - 40, y = cy - r.top - 20;
+            if(x < 0) x = 0; if(x > r.width - el.offsetWidth) x = r.width - el.offsetWidth;
+            if(y < 0) y = 0; if(y > r.height - el.offsetHeight) y = r.height - el.offsetHeight;
             el.style.left = x+"px"; el.style.top = y+"px";
             if(conn) conn.send({type:'move', id:id, x:el.style.left, y:el.style.top});
         };
-        el.addEventListener('mousedown', () => document.addEventListener('mousemove', move));
-        el.addEventListener('touchstart', () => document.addEventListener('touchmove', move));
-        document.addEventListener('mouseup', () => document.removeEventListener('mousemove', move));
-        document.addEventListener('touchend', () => document.removeEventListener('touchmove', move));
-    }
-
-    // OYUN MANTIĞI
-    function startGame() {
-        players.sort(() => Math.random() - 0.5);
-        conn.send({type:'start', players:players});
-        show('scr-game'); startTurnLogic();
-    }
-
-    function startTimer() {
-        let timeLeft = 20;
-        document.getElementById('timer').innerText = timeLeft;
-        clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            document.getElementById('timer').innerText = timeLeft;
-            if(timeLeft <= 0) {
-                clearInterval(timerInterval);
-                if(!document.getElementById('game-input').disabled) sendTurn();
-            }
-        }, 1000);
+        el.onmousedown = () => document.onmousemove = move;
+        el.ontouchstart = () => document.ontouchmove = move;
+        document.onmouseup = document.ontouchend = () => { document.onmousemove = null; document.ontouchmove = null; };
     }
 
     function startTurnLogic() {
-        if(turnIdx >= maxTurns) {
-            if(conn) conn.send({type:'finish', history: history});
-            showResults(); return;
-        }
+        if(turnIdx >= maxTurns) { if(conn) conn.send({type:'finish', history: history}); showResults(); return; }
         let current = players[turnIdx % players.length];
         const isMyTurn = current.id === myId;
-        
-        document.getElementById('turn-msg').innerText = isMyTurn ? "SIRA SENDE! ÇABUK YAZ!" : current.nick + " DÜŞÜNÜYOR...";
-        document.getElementById('game-input').disabled = !isMyTurn;
-        document.getElementById('send-btn').disabled = !isMyTurn;
-        
-        if(isMyTurn) {
-            startTimer();
-            document.getElementById('game-input').focus();
-        } else {
-            clearInterval(timerInterval);
-        }
+        if(isMyTurn) { audioPop.play(); startTimer(); document.getElementById('game-input').disabled = false; document.getElementById('game-input').focus(); document.getElementById('send-btn').disabled = false;}
+        else { document.getElementById('game-input').disabled = true; document.getElementById('send-btn').disabled = true; clearInterval(timerInterval); }
+        document.getElementById('word-display').innerText = isMyTurn ? (history.length ? document.getElementById('word-display').innerText : "İlk cümleyi yazarak kaosu başlat!") : current.nick + " yazıyor...";
     }
 
-    function sendTyping() { if(conn) conn.send({type:'typing', nick:myNick}); }
+    function startTimer() {
+        let t = 20; document.getElementById('timer').innerText = t;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            t--; document.getElementById('timer').innerText = t;
+            if(t <= 5) { document.body.classList.add('panic'); audioTick.play(); } else { document.body.classList.remove('panic'); }
+            if(t <= 0) { clearInterval(timerInterval); sendTurn(); }
+        }, 1000);
+    }
 
     function sendTurn() {
-        const val = document.getElementById('game-input').value || "Boş bıraktı!";
+        const val = document.getElementById('game-input').value || "Sessiz kaldı...";
         history.push({nick: myNick, text: val});
         if(conn) conn.send({type:'play', text:val, nick: myNick});
-        document.getElementById('game-input').value = "";
+        document.getElementById('game-input').value = ""; document.body.classList.remove('panic');
         turnIdx++; startTurnLogic();
     }
 
     function receiveTurn(t) {
-        let corruption = 0.4;
         let words = t.split(' ').map(w => {
-            if(Math.random() < 0.2) return foreign[Math.floor(Math.random()*foreign.length)];
-            return w.split('').map(c => (charMap[c.toLowerCase()] && Math.random() < 0.5) ? charMap[c.toLowerCase()] : c).join('');
+            if(Math.random() < 0.2) return ['Meow', 'Bzzz', 'Woof', 'Kaos'][Math.floor(Math.random()*4)];
+            return w.split('').map(c => (Math.random() < 0.3) ? '?' : c).join('');
         }).join(' ');
-        
         document.getElementById('word-display').innerText = words;
         turnIdx++; startTurnLogic();
     }
 
-    // OYLAMA SİSTEMİ
-    function showResults() {
-        show('scr-final');
+    function castVote(idx) {
+        if(myVoteIdx === idx) { votes[idx]--; myVoteIdx = -1; }
+        else { if(myVoteIdx !== -1) votes[myVoteIdx]--; votes[idx] = (votes[idx] || 0) + 1; myVoteIdx = idx; }
+        if(conn) conn.send({type:'vote_sync', votes: votes});
         updateVoteDisplay();
     }
 
     function updateVoteDisplay() {
         const resDiv = document.getElementById('final-results');
-        resDiv.innerHTML = history.map((h, i) => `
-            <div class="res-item" onclick="castVote(${i})">
-                <span><b>${h.nick}:</b> ${h.text}</span>
-                <span class="vote-count">🔥 ${votes[i] || 0}</span>
-            </div>
-        `).join('');
+        let maxV = 0, winner = '';
+        resDiv.innerHTML = history.map((h, i) => {
+            if((votes[i]||0) > maxV) { maxV = votes[i]; winner = h.nick; }
+            return `<div class="res-item" style="padding:10px; border-bottom:1px solid #eee; cursor:pointer; background:${myVoteIdx===i?'#d4edda':'white'}" onclick="castVote(${i})"><b>${h.nick}:</b> ${h.text} <span>🔥 ${votes[i]||0}</span></div>`;
+        }).join('');
+        if(maxV > 0) document.getElementById('winner-text').innerText = "🏆 KAOS KRALI: " + winner;
     }
 
-    function castVote(idx) {
-        votes[idx] = (votes[idx] || 0) + 1;
-        if(conn) conn.send({type:'vote', idx: idx});
-        updateVoteDisplay();
+    function startGame() {
+        maxTurns = parseInt(document.getElementById('turn-select').value);
+        players.sort(() => Math.random() - 0.5);
+        conn.send({type:'start', players:players, maxTurns: maxTurns});
+        resetGameState(); show('scr-game'); startTurnLogic();
     }
 
-    function show(id) { 
-        document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); 
-        document.getElementById(id).classList.add('active'); 
-    }
+    function resetGameState() { turnIdx = 0; history = []; votes = {}; myVoteIdx = -1; document.body.classList.remove('panic'); }
+    function backToLobby() { if(conn) conn.send({type:'back_to_lobby'}); show('scr-lobby'); }
+    function show(id) { document.querySelectorAll('.content').forEach(c=>c.classList.remove('active')); document.getElementById(id).classList.add('active'); }
 </script>
 </body>
 </html>
