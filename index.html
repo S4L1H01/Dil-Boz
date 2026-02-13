@@ -3,69 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DİL-BOZ | v7 Flow</title>
+    <title>DİL-BOZ | v8 Vibrant</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --bg: #F0F4F8; --primary: #6E7BFF; --secondary: #FF85A1; --accent: #FFD166; --text: #2D3436; --success: #00B894; }
-        body { background: var(--bg); margin: 0; overflow: hidden; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .bg-pattern { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.3; background-image: radial-gradient(#6e7bff 0.5px, transparent 0.5px), radial-gradient(#6e7bff 0.5px, #e5e5f7 0.5px); background-size: 20px 20px; z-index: -1; }
-        .panel { background: white; width: 95%; max-width: 800px; min-height: 85vh; border-radius: 40px; border: 12px solid white; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.1); position: relative; }
-        .header { padding: 15px; background: var(--primary); color: white; text-align: center; font-size: 1.6rem; font-weight: bold; border-radius: 25px 25px 5px 5px; }
-        .content { flex: 1; padding: 20px; display: none; flex-direction: column; align-items: center; overflow-y: auto; }
+        :root { 
+            --bg: #F0F2F5; 
+            --primary: #8E44AD; 
+            --secondary: #FF4757; 
+            --accent: #F1C40F; 
+            --panel-bg: #FFFFFF;
+            --success: #2ED573;
+            --text: #2F3542;
+        }
+        
+        body { 
+            background: var(--bg); 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Poppins', sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+
+        /* Arka Plan Deseni */
+        .bg-pattern {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #e0e0ff 0%, #f0f2f5 100%);
+            z-index: -1;
+        }
+
+        .panel { 
+            background: var(--panel-bg); 
+            width: 92%; 
+            max-width: 850px; 
+            height: 85vh; 
+            border-radius: 50px; 
+            border: 10px solid #FFFFFF; 
+            display: flex; 
+            flex-direction: column; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header { 
+            padding: 20px; 
+            background: linear-gradient(135deg, var(--primary), #9B59B6); 
+            color: white; 
+            text-align: center; 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            letter-spacing: 2px;
+        }
+
+        .content { flex: 1; padding: 25px; display: none; flex-direction: column; align-items: center; overflow-y: auto; }
         .active { display: flex; }
-        #lobby-container { display: flex; width: 100%; gap: 15px; flex-wrap: wrap; }
-        #lobby-area { flex: 2; height: 350px; background: #F8FAFC; border-radius: 30px; position: relative; border: 4px dashed #CBD5E1; overflow: hidden; min-width: 300px; cursor: crosshair; }
-        #wardrobe { flex: 1; background: #FFF9F0; border-radius: 20px; padding: 10px; border: 2px solid var(--accent); overflow-y: auto; max-height: 350px; }
-        .player-bubble { position: absolute; padding: 12px 22px; background: var(--secondary); color: white; border-radius: 50px; font-weight: bold; border: 3px solid white; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: left 0.8s ease-out, top 0.8s ease-out; pointer-events: none; }
-        .acc { position: absolute; font-size: 30px; left: 50%; transform: translateX(-50%); z-index: 10; }
-        .hat { top: -35px; } .gls { top: -10px; font-size: 22px; } .mus { bottom: -18px; }
-        .wardrobe-sec { margin-bottom: 10px; }
-        .wardrobe-title { font-size: 0.7rem; font-weight: bold; color: #d35400; margin-bottom: 5px; border-bottom: 1px solid #ffeaa7; }
-        .acc-option { font-size: 20px; cursor: pointer; padding: 4px; border-radius: 8px; border: 1px solid #ddd; margin: 2px; display: inline-block; background: white; transition: 0.2s; }
-        .word-box { background: #F1F2F6; padding: 25px; border-radius: 25px; font-size: 1.3rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 15px 0; min-height: 60px; word-wrap: break-word; }
-        button { padding: 12px 25px; border-radius: 15px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.2s; margin: 5px; }
-        .btn-green { background: var(--success); } .btn-blue { background: var(--primary); } .btn-red { background: #FF7675; }
-        .btn-large { width: 95%; font-size: 1.4rem; padding: 20px; }
-        input, select { padding: 12px; border-radius: 15px; border: 2px solid #ddd; margin: 5px; outline: none; }
+
+        /* Lobi Tasarımı */
+        #lobby-container { display: flex; width: 100%; gap: 20px; height: 100%; }
+        
+        #lobby-area { 
+            flex: 2; 
+            background: #F8F9FE; 
+            border-radius: 35px; 
+            position: relative; 
+            border: 3px dashed #D1D8E0; 
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,0.02);
+        }
+
+        #wardrobe { 
+            flex: 0.8; 
+            background: #FFF; 
+            border-radius: 30px; 
+            padding: 15px; 
+            border: 2px solid #F1F2F6;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        /* Baloncuk ve Hareket */
+        .player-bubble { 
+            position: absolute; 
+            padding: 14px 25px; 
+            background: linear-gradient(135deg, var(--secondary), #FF6B81); 
+            color: white; 
+            border-radius: 50px; 
+            font-weight: 700; 
+            border: 4px solid white; 
+            white-space: nowrap; 
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+            transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .acc { position: absolute; font-size: 32px; left: 50%; transform: translateX(-50%); pointer-events: none; }
+        .hat { top: -40px; } 
+        .gls { top: -5px; font-size: 24px; } 
+        .mus { bottom: -22px; }
+
+        /* Modern Butonlar */
+        button { 
+            padding: 15px 30px; 
+            border-radius: 20px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 800; 
+            color: white; 
+            transition: 0.3s; 
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .btn-green { background: var(--success); }
+        .btn-blue { background: #3498DB; }
+        .btn-red { background: #E74C3C; }
+        .btn-large { width: 100%; font-size: 1.5rem; padding: 25px; background: var(--success); border-bottom: 6px solid #26af5c; }
+
+        .wardrobe-title { font-size: 0.8rem; font-weight: 900; color: #A4B0BE; margin: 10px 0 5px; text-transform: uppercase; letter-spacing: 1px; }
+        .acc-option { font-size: 22px; cursor: pointer; padding: 8px; border-radius: 12px; border: 2px solid #F1F2F6; margin: 3px; display: inline-block; background: #FFF; transition: 0.2s; }
+        .acc-option:hover { background: #F1C40F; border-color: #F1C40F; transform: scale(1.1); }
+
+        .word-box { background: #F8F9FE; padding: 30px; border-radius: 35px; font-size: 1.5rem; border: 4px solid var(--accent); width: 85%; text-align: center; margin: 20px 0; color: var(--text); font-weight: 700; }
+        
+        #timer { font-size: 3rem; font-weight: 900; color: var(--secondary); margin-bottom: 10px; }
+        
+        input { padding: 18px; border-radius: 20px; border: 3px solid #F1F2F6; width: 70%; font-size: 1.1rem; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary); }
     </style>
 </head>
 <body>
 <div class="bg-pattern"></div>
 <div class="panel">
     <div class="header">DİL-BOZ 🌀</div>
+    
     <div id="scr-login" class="content active">
-        <input type="text" id="nick" placeholder="Adın...">
-        <button class="btn-green" onclick="setup('host')">Oda Kur</button>
-        <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Katıl</button>
-        <div id="join-box" style="display:none; margin-top:10px;"><input type="text" id="room-id" placeholder="Kod"><button class="btn-blue" onclick="setup('join')">Giriş</button></div>
+        <h2 style="color: var(--primary)">Hoş Geldin!</h2>
+        <input type="text" id="nick" placeholder="Takma Adın...">
+        <div style="margin-top:20px;">
+            <button class="btn-green" onclick="setup('host')">Oda Kur</button>
+            <button class="btn-blue" onclick="document.getElementById('join-box').style.display='block'">Odaya Katıl</button>
+        </div>
+        <div id="join-box" style="display:none; margin-top:20px;">
+            <input type="text" id="room-id" placeholder="Oda Kodu">
+            <button class="btn-blue" onclick="setup('join')">Bağlan</button>
+        </div>
     </div>
+
     <div id="scr-lobby" class="content">
-        <p>Kod: <b id="my-id" style="color:var(--primary)">...</b></p>
+        <div style="background: #eee; padding: 5px 15px; border-radius: 15px; margin-bottom:15px;">Kod: <b id="my-id" style="color:var(--primary)">...</b></div>
         <div id="lobby-container">
             <div id="lobby-area" onmousedown="moveMyBubble(event)" ontouchstart="moveMyBubble(event)"></div>
             <div id="wardrobe">
-                <div class="wardrobe-sec"><div class="wardrobe-title">SÜSLER</div>
-                    <div class="acc-option" onclick="setAcc('hat', '🎩')">🎩</div><div class="acc-option" onclick="setAcc('hat', '👑')">👑</div>
-                    <div class="acc-option" onclick="setAcc('hat', '🎀')">🎀</div><div class="acc-option" onclick="setAcc('hat', '🎈')">🎈</div>
-                    <div class="acc-option" onclick="setAcc('hat', '')">❌</div>
-                </div>
-                <div class="wardrobe-sec"><div class="wardrobe-title">AKSESUAR</div>
-                    <div class="acc-option" onclick="setAcc('gls', '👓')">👓</div><div class="acc-option" onclick="setAcc('gls', '🕶️')">🕶️</div>
-                    <div class="acc-option" onclick="setAcc('gls', '💎')">💎</div><div class="acc-option" onclick="setAcc('gls', '')">❌</div>
-                </div>
-                <div class="wardrobe-sec"><div class="wardrobe-title">EKSTRA</div>
-                    <div class="acc-option" onclick="setAcc('mus', '🔥')">🔥</div><div class="acc-option" onclick="setAcc('mus', '✨')">✨</div>
-                    <div class="acc-option" onclick="setAcc('mus', '🍀')">🍀</div><div class="acc-option" onclick="setAcc('mus', '')">❌</div>
-                </div>
+                <div class="wardrobe-title">Süsler</div>
+                <div class="acc-option" onclick="setAcc('hat', '🎩')">🎩</div>
+                <div class="acc-option" onclick="setAcc('hat', '👑')">👑</div>
+                <div class="acc-option" onclick="setAcc('hat', '🎀')">🎀</div>
+                <div class="acc-option" onclick="setAcc('hat', '')">❌</div>
+
+                <div class="wardrobe-title">Gözlükler</div>
+                <div class="acc-option" onclick="setAcc('gls', '🕶️')">🕶️</div>
+                <div class="acc-option" onclick="setAcc('gls', '👓')">👓</div>
+                <div class="acc-option" onclick="setAcc('gls', '🥽')">🥽</div>
+                <div class="acc-option" onclick="setAcc('gls', '')">❌</div>
+
+                <div class="wardrobe-title">Bıyık / Efekt</div>
+                <div class="acc-option" onclick="setAcc('mus', '〰️')">〰️</div>
+                <div class="acc-option" onclick="setAcc('mus', '🔥')">🔥</div>
+                <div class="acc-option" onclick="setAcc('mus', '✨')">✨</div>
+                <div class="acc-option" onclick="setAcc('mus', '')">❌</div>
             </div>
         </div>
-        <div id="host-settings" style="display:none">
-            <select id="turn-select"><option value="2">2 Tur</option><option value="4">4 Tur</option><option value="6" selected>6 Tur</option><option value="12">12 Tur</option></select>
-            <button class="btn-green" onclick="startGame()">BAŞLAT!</button>
+        <div id="host-settings" style="display:none; margin-top:15px; width:100%; text-align:center;">
+            <select id="turn-select" style="padding:10px; border-radius:10px;">
+                <option value="2">2 Tur</option><option value="4">4 Tur</option><option value="6" selected>6 Tur</option>
+            </select>
+            <button class="btn-green" onclick="startGame()">OYUNU BAŞLAT</button>
         </div>
     </div>
-    <div id="scr-game" class="content"><div id="timer">20</div><div class="word-box" id="word-display">...</div><input type="text" id="game-input" placeholder="Bozarak yaz..." disabled oninput="sendTyping()" style="width:70%"><button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>GÖNDER</button></div>
-    <div id="scr-final" class="content"><h2 id="winner-text">Oylama!</h2><div id="final-results" style="width:100%"></div><button class="btn-green btn-large" id="btn-back-lobby" style="display:none" onclick="hostBackToLobby()">LOBİYE DÖN</button><button class="btn-red" onclick="location.reload()">ÇIKIŞ</button></div>
+
+    <div id="scr-game" class="content">
+        <div id="timer">20</div>
+        <div class="word-box" id="word-display">...</div>
+        <div style="width:100%; display:flex; justify-content:center; gap:10px;">
+            <input type="text" id="game-input" placeholder="Bozarak yaz..." disabled oninput="sendTyping()">
+            <button id="send-btn" class="btn-green" onclick="sendTurn()" disabled>OK</button>
+        </div>
+    </div>
+
+    <div id="scr-final" class="content">
+        <h2 id="winner-text" style="color:var(--primary)">Oylama Zamanı!</h2>
+        <div id="final-results" style="width:100%; max-height:300px; overflow-y:auto;"></div>
+        <button class="btn-large" id="btn-back-lobby" style="display:none; margin-top:20px;" onclick="hostBackToLobby()">YENİDEN OYNA</button>
+        <button class="btn-red" onclick="location.reload()" style="margin-top:10px;">ODADAN AYRIL</button>
+    </div>
 </div>
 
 <script>
@@ -74,15 +209,19 @@
     const audioTick = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
 
     function setup(mode) {
-        isHost = mode === 'host'; myNick = document.getElementById('nick').value || "İsimsiz";
-        const shortId = Math.random().toString(36).substring(2, 6).toUpperCase();
-        peer = new Peer(isHost ? shortId : undefined);
+        isHost = mode === 'host'; myNick = document.getElementById('nick').value || "Oyuncu";
+        peer = new Peer(isHost ? Math.random().toString(36).substring(2, 6).toUpperCase() : undefined);
         peer.on('open', id => {
             myId = id; document.getElementById('my-id').innerText = id;
             show('scr-lobby'); addBubble(id, myNick, myAcc);
             players = [{id, nick: myNick, acc: myAcc}];
-            if(isHost) { document.getElementById('host-settings').style.display='block'; peer.on('connection', conn => { connections.push(conn); handleData(conn); }); }
-            else { const conn = peer.connect(document.getElementById('room-id').value.toUpperCase()); connections = [conn]; handleData(conn); }
+            if(isHost) {
+                document.getElementById('host-settings').style.display='block';
+                peer.on('connection', conn => { connections.push(conn); handleData(conn); });
+            } else {
+                const conn = peer.connect(document.getElementById('room-id').value.toUpperCase());
+                connections = [conn]; handleData(conn);
+            }
         });
     }
 
@@ -116,7 +255,10 @@
                 broadcast({type:'sync', state, turnIdx, history, players, maxTurns, lastText: d.text});
                 if(state === 'final') showResults(); else startTurnLogic(d.text);
             }
-            if(d.type === 'typing') { let current = players[turnIdx % players.length]; if(myId !== current.id) document.getElementById('word-display').innerText = d.nick + " bozuyor..."; }
+            if(d.type === 'typing') { 
+                let current = players[turnIdx % players.length];
+                if(myId !== current.id) document.getElementById('word-display').innerText = d.nick + " bozuyor..."; 
+            }
             if(d.type === 'vote_sync') { votes = d.votes; updateVoteDisplay(); }
         });
     }
@@ -127,18 +269,22 @@
         b.id = 'bub-'+id; b.className = 'player-bubble'; b.innerText = nick;
         b.innerHTML += `<div class="acc hat">${acc.hat||''}</div><div class="acc gls">${acc.gls||''}</div><div class="acc mus">${acc.mus||''}</div>`;
         const area = document.getElementById('lobby-area');
-        b.style.left = Math.random() * (area.offsetWidth - 100) + "px";
-        b.style.top = Math.random() * (area.offsetHeight - 50) + "px";
+        b.style.left = Math.random() * (area.offsetWidth - 120) + "px";
+        b.style.top = Math.random() * (area.offsetHeight - 60) + "px";
         area.appendChild(b);
     }
 
     function moveMyBubble(e) {
         const area = document.getElementById('lobby-area');
         const rect = area.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left - 50;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top - 25;
+        const x = (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - rect.left - 50;
+        const y = (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - rect.top - 25;
         const b = document.getElementById('bub-'+myId);
-        if(b) { b.style.left = x+"px"; b.style.top = y+"px"; broadcast({type:'move', id:myId, x:b.style.left, y:b.style.top}); }
+        if(b) { 
+            b.style.left = Math.max(0, Math.min(x, area.offsetWidth - 100)) + "px"; 
+            b.style.top = Math.max(0, Math.min(y, area.offsetHeight - 50)) + "px"; 
+            broadcast({type:'move', id:myId, x:b.style.left, y:b.style.top}); 
+        }
     }
 
     function updateBubbleAcc(id, acc) {
@@ -159,7 +305,7 @@
     function corruptText(text) {
         const chars = "æßðđħłø@#$%&0123456789";
         return text.split(' ').map(w => {
-            return w.split('').map(c => Math.random() < 0.2 ? chars[Math.floor(Math.random()*chars.length)] : c).join('') + (Math.random() < 0.1 ? '🌀' : '');
+            return w.split('').map(c => Math.random() < 0.25 ? chars[Math.floor(Math.random()*chars.length)] : c).join('') + (Math.random() < 0.1 ? '🌀' : '');
         }).join(' ');
     }
 
@@ -170,8 +316,8 @@
         document.getElementById('send-btn').disabled = !isMyTurn;
         if(isMyTurn) {
             startTimer(); document.getElementById('game-input').focus();
-            document.getElementById('word-display').innerText = turnIdx === 0 ? "İlk cümleyi yaz!" : corruptText(lastText);
-        } else { clearInterval(timerInterval); document.getElementById('word-display').innerText = current.nick + " bekleniyor..."; }
+            document.getElementById('word-display').innerText = turnIdx === 0 ? "Bir cümle yazarak başla!" : corruptText(lastText);
+        } else { clearInterval(timerInterval); document.getElementById('word-display').innerText = current.nick + " düşünüyor..."; }
     }
 
     function startTimer() {
@@ -179,14 +325,14 @@
         clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             t--; document.getElementById('timer').innerText = t;
-            if(t <= 5) { document.body.style.background = "#ffcccc"; audioTick.play(); }
+            if(t <= 5) { document.body.style.background = "#FF475733"; audioTick.play(); }
             if(t <= 0) { clearInterval(timerInterval); sendTurn(); }
         }, 1000);
     }
 
     function sendTurn() {
         const val = document.getElementById('game-input').value || "...";
-        document.getElementById('game-input').value = ""; document.body.style.background = "#F0F4F8";
+        document.getElementById('game-input').value = ""; document.body.style.background = "var(--bg)";
         if(isHost) {
             history.push({nick: myNick, text: val}); turnIdx++;
             let state = (turnIdx >= maxTurns) ? 'final' : 'game';
@@ -195,16 +341,19 @@
         } else connections[0].send({type:'play', text:val, nick: myNick});
     }
 
-    function showResults() { show('scr-final'); updateVoteDisplay(); if(isHost) document.getElementById('btn-back-lobby').style.display = 'block'; }
+    function showResults() { 
+        show('scr-final'); updateVoteDisplay(); 
+        if(isHost) document.getElementById('btn-back-lobby').style.display = 'block'; 
+    }
 
     function updateVoteDisplay() {
         const resDiv = document.getElementById('final-results');
         let maxV = 0, winner = '';
         resDiv.innerHTML = history.map((h, i) => {
             if((votes[i]||0) > maxV) { maxV = votes[i]; winner = h.nick; }
-            return `<div style="padding:10px; border:2px solid #eee; margin:5px; border-radius:15px; background:white" onclick="castVote(${i})"><b>${h.nick}:</b> ${h.text} <span>🔥 ${votes[i]||0}</span></div>`;
+            return `<div style="padding:15px; border:3px solid #F1F2F6; margin:10px; border-radius:20px; background:white; cursor:pointer;" onclick="castVote(${i})"><b>${h.nick}:</b> ${h.text} <span style="float:right">🔥 ${votes[i]||0}</span></div>`;
         }).join('');
-        if(maxV > 0) document.getElementById('winner-text').innerText = "🏆 KRAL: " + winner;
+        if(maxV > 0) document.getElementById('winner-text').innerText = "👑 KRAL: " + winner;
     }
 
     function castVote(idx) {
@@ -224,8 +373,7 @@
 
     function resetToLobby() {
         clearInterval(timerInterval); turnIdx = 0; history = []; votes = {}; myVoteIdx = -1;
-        document.body.style.background = "#F0F4F8"; document.getElementById('winner-text').innerText = "Oylama!";
-        show('scr-lobby');
+        document.body.style.background = "var(--bg)"; show('scr-lobby');
     }
 
     function sendTyping() { broadcast({type:'typing', nick:myNick}); }
